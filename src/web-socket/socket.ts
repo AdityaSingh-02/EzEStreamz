@@ -1,20 +1,18 @@
-import { server } from "websocket";
+import { server, w3cwebsocket } from "websocket";
 import http from "http";
 
 const createWebSocket = async () => {
   let connection = null;
-  const httpserver = http.createServer((req, res) => {
-    console.log("server created");
-  });
+  const httpserver = http.createServer();
 
   const websocket = new server({
     httpServer: httpserver,
   });
-
+  
   websocket.on("request", (request) => {
     connection = request.accept(null, request.origin);
-    connection.on("ping", (e) => console.log("Connection open"));
   });
+  return connection
 };
 
 export default createWebSocket;
