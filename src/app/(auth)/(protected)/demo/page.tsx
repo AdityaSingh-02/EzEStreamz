@@ -23,15 +23,16 @@ const Demo = () => {
   const handleclick = async () => {
     // const offer = createOffer();
     const data: IWebSocketInit = {
+      call: "join",
       email: "asd",
       name: "aditya",
       rid: "123",
     };
     axios
-      .post("/api/v1/create")
+      .post("/api/v1/create", data)
       .then((res: any) => {
         if (res.status === 200) {
-          axios.post('api/v1/demo',{method:"join" ,email: "Hello", name: "adi", rid: "1234" })
+          axios.post('api/v1/demo',data)
         }
       });
   };

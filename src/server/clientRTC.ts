@@ -1,25 +1,26 @@
-import type { IWebSocketInit } from "./webSocket";
+import { IWebSocketInit } from "./webSocket";
 
 async function createClientRTC(data: IWebSocketInit) {
-    const ws = new WebSocket("ws://localhost:3001");
-    const {method, name, email, rid} = data;
-    ws.onopen = () => {
-      console.log("WebSocket connection established.");
-      // You can send messages here, as the connection is now open.
-      ws.send(method!);
-    };
+  const ws = new WebSocket("ws://localhost:3001");
+  const { call, email, name, rid }: IWebSocketInit = data;
+  ws.onopen = () => {
+    console.log("WebSocket connection established.");
+    console.log("value of call: ", call);
+    // You can send messages here, as the connection is now open.
+    ws.send(call);
+  };
 
-    ws.onmessage = (message) => {
-      console.log(`Received message: ${message.data}`);
-    };
+  ws.onmessage = (message) => {
+    console.log(`Received message: ${message.data}`);
+  };
 
-    ws.onclose = () => {
-      console.log("WebSocket connection closed.");
-    };
+  ws.onclose = () => {
+    console.log("WebSocket connection closed.");
+  };
 
-    ws.onerror = (error) => {
-      console.error("WebSocket error:", error);
-    };
-  }
+  ws.onerror = (error) => {
+    console.error("WebSocket error:", error);
+  };
+}
 
-  export default createClientRTC;
+export default createClientRTC;
