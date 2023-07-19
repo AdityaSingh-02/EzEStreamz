@@ -2,7 +2,7 @@
 import React, { Dispatch, FC, SetStateAction, useState } from "react";
 import appwriteService from "@/appwrite-service/config";
 import type { User } from "@/types/appwrite";
-import useAuth from "@/Context/useAuth";
+import useAuth from "@/Context/Authentication/useAuth";
 import { useRouter } from "next/navigation";
 import { AuthRequiredError } from "@/lib/AuthRequired";
 

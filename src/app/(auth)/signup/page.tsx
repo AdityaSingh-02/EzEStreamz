@@ -1,17 +1,17 @@
-"use client"
+"use client";
 import React, { useState } from "react";
-import useAuth from "@/Context/useAuth";
+import { useAuth } from "@/Context/index";
 import { useRouter } from "next/navigation";
 import SignupForm from "@/components/signup";
 import { AuthRequiredError } from "@/lib/AuthRequired";
 
 const Signup = () => {
   const router = useRouter();
-  const {authStatus} = useAuth();
-  const [error, setError] = useState("")
+  const { authStatus } = useAuth();
+  const [error, setError] = useState("");
 
-  if(error){
-    throw new AuthRequiredError(error)
+  if (error) {
+    throw new AuthRequiredError(error);
   }
 
   if (authStatus) {

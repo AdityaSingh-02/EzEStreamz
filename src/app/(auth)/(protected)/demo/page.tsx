@@ -1,10 +1,9 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import dynamic from "next/dynamic";
 import axios from "axios";
+import dynamic from "next/dynamic";
 const ReactPlayer = dynamic(() => import("react-player"), { ssr: false });
 import { usePeer } from "@/Context/usePeer";
-import { server, w3cwebsocket } from "websocket";
 import type { IWebSocketInit } from "@/server/webSocket";
 
 const Demo = () => {
@@ -36,29 +35,6 @@ const Demo = () => {
         }
       });
   };
-
-  // ("use server");
-  // async function createClientRTC() {
-  //   const ws = new WebSocket("ws://localhost:3001");
-
-  //   ws.onopen = () => {
-  //     console.log("WebSocket connection established.");
-  //     // You can send messages here, as the connection is now open.
-  //     ws.send("Hello, server!");
-  //   };
-
-  //   ws.onmessage = (message) => {
-  //     console.log(`Received message: ${message.data}`);
-  //   };
-
-  //   ws.onclose = () => {
-  //     console.log("WebSocket connection closed.");
-  //   };
-
-  //   ws.onerror = (error) => {
-  //     console.error("WebSocket error:", error);
-  //   };
-  // }
 
   return (
     <>

@@ -1,7 +1,7 @@
 "use client";
 
 import type { Metadata } from "next";
-import { AuthProvider } from "@/Context/authContext";
+import { AuthProvider } from "@/Context/Authentication/authContext";
 import React, { useState, useEffect } from "react";
 import appwriteService from "@/appwrite-service/config";
 

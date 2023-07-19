@@ -1,7 +1,7 @@
 "use client"
 import './app.css'
 import Link from 'next/link'
-import useAuth from '@/Context/useAuth'
+import useAuth from '@/Context/Authentication/useAuth'
 import { useRouter } from 'next/navigation'
 import { useEffect } from 'react'
 

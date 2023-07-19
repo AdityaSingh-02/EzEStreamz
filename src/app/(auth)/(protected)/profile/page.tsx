@@ -1,13 +1,36 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import appwriteService from "@/appwrite-service/config";
+import { useRouter } from "next/navigation";
+
+interface CreateRoom {
+  name: string;
+  email: string;
+}
 
 const ProfilePage = () => {
   const [createState, changeCreateState] = useState(false);
   const [render, setRender] = useState("");
 
+  const [user, setUser] = useState<CreateRoom>({
+    name: "",
+    email: "",
+  });
+
+  const router = useRouter();
+
+  useEffect(() => {
+    async function getUSer() {
+      const res = await appwriteService.getUser();
+      const { name, email }: CreateRoom = res;
+      setUser({ name, email });
+    }
+    getUSer();
+    console.log(user?.name);
+  }, [createState]);
+
   const handleCreateRoom = () => {
-    changeCreateState(true);
-    setRender("create");
+    router.push("/preview");
   };
 
   const handleJoinRoom = () => {
@@ -32,18 +55,6 @@ const ProfilePage = () => {
             </button>
           </div>
         )}
-        {createState && (render === "create" ? (
-          <div className="flex flex-col items-center justify-center px-16 py-7 bg-teal-800 rounded-lg">
-            <p className="text-2xl pb-6">Create Room</p>
-            <div className="flex flex-col space-y-5 text-black">
-              <input className="px-4 py-2 rounded-lg" type="text" name="" id="" />
-              <input className="px-4 py-2 rounded-lg" type="text" name="" id="" />
-              <button className="px-4 py-2 rounded-lg bg-slate-800" >Create</button>
-            </div>
-          </div>
-        ) : (
-          <div>Join</div>
-        ))}
       </div>
     </>
   );
