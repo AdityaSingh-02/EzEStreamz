@@ -2,19 +2,12 @@
 import React, { useEffect, useState } from "react";
 import dynamic from "next/dynamic";
 const ReactPlayer = dynamic(() => import("react-player"), { ssr: false });
-import { v4 } from "uuid";
 import { useVideo } from "@/Context";
 import {BsCameraVideo, BsCameraVideoOff} from 'react-icons/bs'
 
 const Preview = () => {
   const [video, setVideo] = useState<MediaStream>();
-  const [roomId, setRoomId] = useState("");
   const { videoStatus, setVideoStatus } = useVideo();
-
-  let rid = v4().substring(0, 12);
-  if (roomId === "") {
-    setRoomId(rid);
-  }
 
   useEffect(() => {
     if (videoStatus) {
@@ -46,22 +39,21 @@ const Preview = () => {
           <ReactPlayer url={video} playing muted height={500} width={800} />
         </div>
         <div className="flex flex-col space-y-5">
-          <h1 className="px-4 py-2 rounded-md bg-black mx-2 text-xl">
-            Room Id - {roomId}
-          </h1>
-          <button className="px-4 py-2 rounded-md bg-gray-500 mx-2 text-xl">
+          <input type="text" placeholder="Enter Room Id" className="px-4 py-2 rounded-lg text-black"/>
+          <button aria-label="join" className="px-4 py-2 rounded-md bg-gray-500 mx-2 text-xl">
             Join
           </button>
           <button
             onClick={toggleCamera}
+            aria-label={ `${videoStatus ? "Turn off" : "Turn on"} camera`}
             className={`px-4 py-2 flex justify-center rounded-md ${videoStatus ? "bg-red-500" : "bg-gray-500"} mx-2 text-xl`}>
-            {videoStatus? <BsCameraVideoOff /> : <BsCameraVideo />}
+            {videoStatus? <BsCameraVideoOff />  : <BsCameraVideo />}
           </button>
           <p className="text-black text-sm mx-auto">**Mic is Turned off by default</p>
         </div>
       </div>
     </>
-  )
+  );
 };
 
 export default Preview;

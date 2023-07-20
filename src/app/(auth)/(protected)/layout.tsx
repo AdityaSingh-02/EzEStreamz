@@ -27,7 +27,7 @@ export default function RootLayout({
   return (
     <>
       <VideoProvider value={{ videoStatus, setVideoStatus }}>
-        <main className="w-[100%]">{children}</main>;
+        <main className="w-[100%]">{children}</main>
       </VideoProvider>
     </>
   );

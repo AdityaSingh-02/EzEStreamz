@@ -9,9 +9,6 @@ interface CreateRoom {
 }
 
 const ProfilePage = () => {
-  const [createState, changeCreateState] = useState(false);
-  const [render, setRender] = useState("");
-
   const [user, setUser] = useState<CreateRoom>({
     name: "",
     email: "",
@@ -22,39 +19,39 @@ const ProfilePage = () => {
   useEffect(() => {
     async function getUSer() {
       const res = await appwriteService.getUser();
-      const { name, email }: CreateRoom = res;
+      const { name, email }: any = res;
       setUser({ name, email });
     }
     getUSer();
     console.log(user?.name);
-  }, [createState]);
+  }, []);
 
   const handleCreateRoom = () => {
     router.push("/preview");
   };
 
   const handleJoinRoom = () => {
-    changeCreateState(true);
-    setRender("join");
+    router.push("/join");
   };
 
   return (
     <>
-      <div className=" h-screen bg-black flex justify-center items-center">
-        {!createState && (
-          <div className="flex">
-            <button
-              onClick={handleCreateRoom}
-              className="px-4 py-2 rounded-md bg-gray-500 mx-2">
-              Create Room
-            </button>
-            <button
-              onClick={handleJoinRoom}
-              className="px-4 py-2 rounded-md bg-gray-500 mx-2">
-              Join Room
-            </button>
-          </div>
-        )}
+      <div className="h-screen bg-black flex flex-col justify-center items-center">
+        <div className="pb-10">
+          <h1 className="text-2xl font-sans">Hey Welcome!! {user.name} 👀</h1>
+        </div>
+        <div className="space-y-3">
+          <button
+            onClick={handleCreateRoom}
+            className="md:px-4 px-7 md:py-2 py-4 rounded-md bg-gray-500 mx-2">
+            Create Room
+          </button>
+          <button
+            onClick={handleJoinRoom}
+            className="md:px-4 px-7 md:py-2 py-4 rounded-md bg-gray-500 mx-2">
+            Join Room
+          </button>
+        </div>
       </div>
     </>
   );
