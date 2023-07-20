@@ -23,11 +23,18 @@ const Preview = () => {
           setVideo(res);
         });
     } else {
-      setVideo(undefined);
+      cloaseVideo();
     }
   }, [videoStatus]);
 
-  const closeVdo = () => {
+  const cloaseVideo = () => {
+    if (video) {
+      video.getTracks().forEach((track) => track.stop());
+      setVideo(undefined);
+    }
+  };
+
+  const toggleCamera = () => {
     setVideoStatus(!videoStatus);
   };
 
@@ -35,7 +42,7 @@ const Preview = () => {
     <>
       <div className="flex flex-row  justify-around items-center h-screen bg-gradient-to-tr from-blue-500 to-emerald-500">
         <div className="flex rounded-md">
-          <ReactPlayer url={video} playing height={800} width={800} />
+          <ReactPlayer url={video} playing muted height={800} width={800} />
         </div>
         <div className="flex flex-col space-y-5">
           <h1 className="px-4 py-2 rounded-md bg-black mx-2 text-xl">
@@ -45,7 +52,7 @@ const Preview = () => {
             Join
           </button>
           <button
-            onClick={closeVdo}
+            onClick={toggleCamera}
             className="px-4 py-2 rounded-md bg-gray-500 mx-2 text-xl">
             Close
           </button>
