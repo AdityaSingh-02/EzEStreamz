@@ -7,18 +7,22 @@ import { useVideo } from "@/Context";
 import { BsCameraVideo, BsCameraVideoOff } from "react-icons/bs";
 import { BiCopy } from "react-icons/bi";
 import { MdDone } from "react-icons/md";
+import { useRouter } from "next/navigation";
 
 const Preview = () => {
   const [video, setVideo] = useState<MediaStream>();
   const [roomId, setRoomId] = useState("");
   const { videoStatus, setVideoStatus } = useVideo();
   const [copy, setCopyStatus] = useState(false);
+  const router = useRouter();
 
+// get uuid
   let rid = v4().substring(0, 12);
   if (roomId === "") {
     setRoomId(rid);
   }
 
+// Manages video on and off state
   useEffect(() => {
     if (videoStatus) {
       navigator.mediaDevices
@@ -70,7 +74,7 @@ const Preview = () => {
           <button
             onClick={toggleCamera}
             className={`px-4 py-2 flex justify-center rounded-md ${
-              videoStatus ? "bg-red-500" : "bg-gray-500"
+              videoStatus ? "bg-red-500" : "bg-green-500"
             } mx-2 text-xl`}>
             {videoStatus ? <BsCameraVideoOff /> : <BsCameraVideo />}
           </button>

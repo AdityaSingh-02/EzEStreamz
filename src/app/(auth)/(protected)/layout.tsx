@@ -17,7 +17,7 @@ export default function RootLayout({
 }) {
   const router = useRouter();
   const { authStatus } = useAuth();
-  const [videoStatus, setVideoStatus] = useState(true);
+  const [videoStatus, setVideoStatus] = useState(false);
 
   if (!authStatus) {
     router.replace("/");

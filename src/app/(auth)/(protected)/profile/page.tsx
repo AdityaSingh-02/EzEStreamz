@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from "react";
 import appwriteService from "@/appwrite-service/config";
 import { useRouter } from "next/navigation";
+import { useVideo } from "@/Context";
 
 interface CreateRoom {
   name: string;
@@ -15,6 +16,15 @@ const ProfilePage = () => {
   });
 
   const router = useRouter();
+  const { videoStatus } = useVideo();
+
+  // if (videoStatus) {
+  //   navigator.mediaDevices
+  //     .getUserMedia({ video: true, audio: false })
+  //     .then((res) => {
+  //       res.getTracks().forEach((track) => track.stop());
+  //     });
+  // }
 
   useEffect(() => {
     async function getUSer() {
@@ -23,7 +33,6 @@ const ProfilePage = () => {
       setUser({ name, email });
     }
     getUSer();
-    console.log(user?.name);
   }, []);
 
   const handleCreateRoom = () => {
