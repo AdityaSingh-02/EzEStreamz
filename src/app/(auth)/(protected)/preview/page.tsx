@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { use, useEffect, useState } from "react";
 import dynamic from "next/dynamic";
 const ReactPlayer = dynamic(() => import("react-player"), { ssr: false });
 import { v4 } from "uuid";
@@ -10,8 +10,8 @@ import { MdDone } from "react-icons/md";
 import { useRouter } from "next/navigation";
 import type { IWebSocketInit } from "@/server/webSocket";
 import appwriteService from "@/appwrite-service/config";
+import {useIUser} from '@/Context'
 import axios from "axios";
-import { error } from "console";
 
 const Preview = () => {
   const [video, setVideo] = useState<MediaStream>();
@@ -23,6 +23,8 @@ const Preview = () => {
     email: "",
   });
   const router = useRouter();
+  const {user} = useIUser();
+
 
   // get uuid
   let rid = v4().substring(0, 12);
@@ -72,15 +74,22 @@ const Preview = () => {
       rid,
       name: userInfo.name,
     };
-    axios.post("/api/v1/create", data).then((res: any) => {
-      if (res.status === 200) {
-        axios.post("api/v1/rtcConnection", data);
-      }
-    }).catch((error)=> {
-      throw new Error(error);
-    }).finally(() => {
-      router.push(`/room/${rid}`);
-    })
+    user.rid = rid;
+    user.email = userInfo.email;
+    user.name = userInfo.name;
+    axios
+      .post("/api/v1/create", data)
+      .then((res: any) => {
+        if (res.status === 200) {
+          axios.post("api/v1/rtcConnection", data);
+        }
+      })
+      .catch((error) => {
+        throw new Error(error);
+      })
+      .finally(() => {
+        router.push(`/room/${rid}`);
+      });
   };
 
   // Function for copying room ID
