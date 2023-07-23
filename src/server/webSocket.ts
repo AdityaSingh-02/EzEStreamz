@@ -1,5 +1,3 @@
-import { UUID } from "crypto";
-
 const { Server } = require("ws");
 
 export interface IWebSocketInit {
