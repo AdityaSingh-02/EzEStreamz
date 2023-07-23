@@ -31,7 +31,7 @@ const Demo = () => {
       .post("/api/v1/create", data)
       .then((res: any) => {
         if (res.status === 200) {
-          axios.post('api/v1/demo',data)
+          axios.post('api/v1/rtcConnection',data)
         }
       });
   };

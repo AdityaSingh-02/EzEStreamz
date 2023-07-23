@@ -18,7 +18,7 @@ export const webSocketInit = async (client: IWebSocketInit) => {
     ws.on("message", (message: any) => {
       if (message == "join") {
 
-        console.log(`join ${email}`);
+        console.log(`joined ${name}`);
         ws.send("joined");
 
         if (!roomConnections.has(rid)) {
