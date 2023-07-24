@@ -10,7 +10,7 @@ async function createClientRTC(data: IWebSocketInit) {
   };
 
   ws.onmessage = (message) => {
-    // console.log(`Received message: ${message.data}`);
+    console.log(`Received message: ${message.data}`);
   };
 
   ws.onclose = () => {

@@ -5,56 +5,47 @@ export interface IWebSocketInit {
   email: string;
   name?: string;
   rid: string;
+  offer?: any;
 }
 
 export const webSocketInit = async (client: IWebSocketInit) => {
   const socketServer = new Server({ port: 3001 });
-  const { call, email, name, rid } = client;
-  const roomConnections = new Map();
+  const { call, email, name, rid, offer } = client;
+  // Stores Email and ws(socketId) -> for email to socket mapping
+  const emailToSocketMap = new Map();
+  // Stores ws and Email id of the first user -> for socket to Email mapping
+  const socketToEmailMap = new Map();
 
   socketServer.on("connection", (ws: any) => {
     console.log("connected");
-
+    // Gets message from the client and message contains method name;
     ws.on("message", (message: any) => {
       if (message == "join") {
-
         console.log(`joined ${name}`);
-        ws.send("joined");
+        ws.send("Join hua")
 
-        if (!roomConnections.has(rid)) {
-          roomConnections.set(rid, []);
+        if (!emailToSocketMap.has(rid)) {
+          emailToSocketMap.set(rid, []);
         }
 
-        roomConnections.get(rid).push({ email, ws });
+        emailToSocketMap.get(rid).push({ email, ws });
+        socketToEmailMap.set(ws, email);
 
         // Broadcasting to everyone in the room except the sender
-        const connectionsInRoom = roomConnections.get(rid);
+        const connectionsInRoom = emailToSocketMap.get(rid);
         for (const {
           ws: connection,
           email: connectedEmail,
         } of connectionsInRoom) {
+          connection.send(JSON.stringify({ type: "new-user", email }));
           if (connectedEmail !== email) {
-            connection.send(JSON.stringify({ type: "new-user", email }));
           }
         }
+      } else if (message == "call-user") {
+        const fromEmail = socketToEmailMap.get(ws);
+        const socketId = emailToSocketMap.get(email);
+        ws.send(JSON.stringify({ type: "call-made", offer, socketId }));
       }
     });
   });
-
-  // const emailToSocketMap = new Map<string, any>();
-
-  // socketServer.on("connection", (ws: any) => {
-  //   console.log("connected");
-
-  //   ws.on("message", (message: any) => {
-  //     if (message == "join") {
-  //       console.log("join ", client.email);
-  //       ws.send("joined");
-  //       const { email, rid }: IWebSocketInit = client;
-  //       emailToSocketMap.set(email, ws.id);
-  //       ws.join(rid);
-  //       ws.broadcast.to(rid).emit("new-user", { email });
-  //     }
-  //   });
-  // });
 };

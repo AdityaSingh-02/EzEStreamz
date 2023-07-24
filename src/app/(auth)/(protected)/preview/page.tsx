@@ -80,14 +80,14 @@ const Preview = () => {
       .post("/api/v1/create", data)
       .then((res: any) => {
         if (res.status === 200) {
-          axios.post("api/v1/rtcConnection", data);
+          axios.post("api/v1/rtcConnection", data).then(() => {
+            router.push(`/room/${rid}`);
+          });
         }
+        console.log(res);
       })
       .catch((error) => {
         throw new Error(error);
-      })
-      .finally(() => {
-        router.push(`/room/${rid}`);
       });
   };
 
