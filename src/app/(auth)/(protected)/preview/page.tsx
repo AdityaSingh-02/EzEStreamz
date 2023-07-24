@@ -10,7 +10,7 @@ import { MdDone } from "react-icons/md";
 import { useRouter } from "next/navigation";
 import type { IWebSocketInit } from "@/server/webSocket";
 import appwriteService from "@/appwrite-service/config";
-import {useIUser} from '@/Context'
+import { useIUser } from "@/Context";
 import axios from "axios";
 
 const Preview = () => {
@@ -23,8 +23,7 @@ const Preview = () => {
     email: "",
   });
   const router = useRouter();
-  const {user} = useIUser();
-
+  const { user } = useIUser();
 
   // get uuid
   let rid = v4().substring(0, 12);

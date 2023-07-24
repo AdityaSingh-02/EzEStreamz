@@ -4,7 +4,7 @@ import {useIUser} from '@/Context'
 import React, { useEffect } from 'react'
 
 const Room = () => {
-  const {peer,createOffer} = usePeer();
+  const {peer,createOfefr} = usePeer();
   const {user} = useIUser();
   useEffect(() => {
     handleJoins();
