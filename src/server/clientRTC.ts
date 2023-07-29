@@ -1,4 +1,5 @@
-import { IWebSocketInit } from "./webSocket";
+'use client'
+import type {IWebSocketInit} from '@/types/socketData'
 
 async function createClientRTC(data: IWebSocketInit) {
   const ws = new WebSocket("ws://localhost:3001");
@@ -11,6 +12,7 @@ async function createClientRTC(data: IWebSocketInit) {
 
   ws.onmessage = (message) => {
     console.log(`Received message: ${message.data}`);
+    ws.send("Hello from server")
   };
 
   ws.onclose = () => {

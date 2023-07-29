@@ -13,6 +13,9 @@ import appwriteService from "@/appwrite-service/config";
 import { useIUser } from "@/Context";
 import axios from "axios";
 
+// Test Import
+// import createClientRTC from "@/server/clientRTC";
+
 const Preview = () => {
   const [video, setVideo] = useState<MediaStream>();
   const [roomId, setRoomId] = useState("");
@@ -65,7 +68,17 @@ const Preview = () => {
     });
   };
 
-  // Manages user Join Data
+  // Function for copying room ID
+  const copyRoomId = () => {
+    navigator.clipboard.writeText(roomId).then(() => {
+      setCopyStatus(true);
+      setTimeout(() => {
+        setCopyStatus(false);
+      }, 1500);
+    });
+  };
+
+  // Manages user Join Data and Websocket connection
   const handleJoinRoom = async () => {
     const data: IWebSocketInit = {
       call: "join",
@@ -78,28 +91,38 @@ const Preview = () => {
     user.name = userInfo.name;
     axios
       .post("/api/v1/create", data)
-      .then((res: any) => {
+      .then(async (res: any) => {
         if (res.status === 200) {
-          axios.post("api/v1/rtcConnection", data).then(() => {
-            router.push(`/room/${rid}`);
-          });
+          await createClientRTC(data);
         }
-        console.log(res);
       })
       .catch((error) => {
         throw new Error(error);
       });
   };
 
-  // Function for copying room ID
-  const copyRoomId = () => {
-    navigator.clipboard.writeText(roomId).then(() => {
-      setCopyStatus(true);
-      setTimeout(() => {
-        setCopyStatus(false);
-      }, 1500);
-    });
-  };
+  async function createClientRTC(data: IWebSocketInit) {
+    const ws = new WebSocket("ws://localhost:3001");
+    const { call, email, name, rid }: IWebSocketInit = data;
+    ws.onopen = () => {
+      console.log("Connected.");
+      // You can send messages here, as the connection is now open.
+      ws.send(call);
+    };
+
+    ws.onmessage = (message) => {
+      console.log(`Received message: ${message.data}`);
+      ws.send("Hello from server");
+    };
+
+    ws.onclose = () => {
+      console.log("WebSocket connection closed.");
+    };
+
+    ws.onerror = (error) => {
+      console.error("WebSocket error:", error);
+    };
+  }
 
   return (
     <>

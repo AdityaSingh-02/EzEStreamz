@@ -22,7 +22,7 @@ export const webSocketInit = async (client: IWebSocketInit) => {
     ws.on("message", (message: any) => {
       if (message == "join") {
         console.log(`joined ${name}`);
-        ws.send("Join hua")
+        ws.send("Join hua");
 
         if (!emailToSocketMap.has(rid)) {
           emailToSocketMap.set(rid, []);
@@ -37,8 +37,8 @@ export const webSocketInit = async (client: IWebSocketInit) => {
           ws: connection,
           email: connectedEmail,
         } of connectionsInRoom) {
-          connection.send(JSON.stringify({ type: "new-user", email }));
           if (connectedEmail !== email) {
+            connection.send(JSON.stringify({ type: "new-user", email }));
           }
         }
       } else if (message == "call-user") {
