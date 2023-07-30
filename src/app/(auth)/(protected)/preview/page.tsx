@@ -10,7 +10,7 @@ import { MdDone } from "react-icons/md";
 import { useRouter } from "next/navigation";
 import type { IWebSocketInit } from "@/server/webSocket";
 import appwriteService from "@/appwrite-service/config";
-import { useIUser } from "@/Context";
+
 import axios from "axios";
 
 // Test Import
@@ -26,7 +26,6 @@ const Preview = () => {
     email: "",
   });
   const router = useRouter();
-  const { user } = useIUser();
 
   // get uuid
   let rid = v4().substring(0, 12);
@@ -86,9 +85,6 @@ const Preview = () => {
       rid,
       name: userInfo.name,
     };
-    user.rid = rid;
-    user.email = userInfo.email;
-    user.name = userInfo.name;
     axios
       .post("/api/v1/create", data)
       .then(async (res: any) => {

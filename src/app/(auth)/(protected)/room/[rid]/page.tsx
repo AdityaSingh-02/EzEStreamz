@@ -2,16 +2,20 @@
 import {usePeer} from '@/Context/usePeer';
 import {useIUser} from '@/Context'
 import React, { useEffect } from 'react'
+import {Props} from '@/types/IRoomUsers'
 
-const Room = () => {
-  const {peer,createOfefr} = usePeer();
-  const {user} = useIUser();
+
+const Room = (props:Props) => {
+  
+  const {peer, createOffer} = usePeer();
+
+  // const {user} = useIUser();
   useEffect(() => {
     handleJoins();
   },[]);
 
   const handleJoins = async () => {
-    console.log("hey This is ", user.name)
+    // console.log("hey This is ", user.name)
   }
 
   return (

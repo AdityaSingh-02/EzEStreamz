@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 import React, { useState } from "react";
 import { useAuth } from "@/Context/index";
 import { useRouter } from "next/navigation";
-import { VideoProvider, UserProvider } from "@/Context";
+import { VideoProvider } from "@/Context";
 import { PeerProvider } from "@/Context/usePeer";
 
 export const metadata: Metadata = {
@@ -25,12 +25,14 @@ export default function RootLayout({
     return <></>;
   }
 
+
+
   return (
     <>
       <PeerProvider>
-        <VideoProvider value={{ videoStatus, setVideoStatus }}>
-          <main className="w-[100%]">{children}</main>
-        </VideoProvider>
+          <VideoProvider value={{ videoStatus, setVideoStatus }}>
+            <main className="w-[100%]">{children}</main>
+          </VideoProvider>
       </PeerProvider>
     </>
   );

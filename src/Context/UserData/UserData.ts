@@ -1,13 +1,11 @@
 import { createContext } from "react";
 
 export const IUserContext = createContext<{
-  user: {
-    email: string;
-    name: string;
-    rid: string;
-  };
+  intialData: {email: string, name: string, rid?: string};
+  userData : (email: string, name: string, rid?: string) => void;
 }>({
-  user: { email: "", name: "", rid: "" },
+  intialData: {email:'', name: '', rid:''},
+  userData:() => {},
 });
 
 export const UserProvider = IUserContext.Provider;
