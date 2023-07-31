@@ -3,32 +3,32 @@ import React, { use, useEffect, useState } from "react";
 import dynamic from "next/dynamic";
 const ReactPlayer = dynamic(() => import("react-player"), { ssr: false });
 import { v4 } from "uuid";
-import { useVideo } from "@/Context";
+import { useVideo, useUserContext } from "@/Context";
 import { BsCameraVideo, BsCameraVideoOff } from "react-icons/bs";
 import { BiCopy } from "react-icons/bi";
 import { MdDone } from "react-icons/md";
 import { useRouter } from "next/navigation";
 import type { IWebSocketInit } from "@/server/webSocket";
 import appwriteService from "@/appwrite-service/config";
-import { useIUser } from "@/Context";
+
 import axios from "axios";
 
-// Test Import
-// import createClientRTC from "@/server/clientRTC";
 
 const Preview = () => {
-  const [video, setVideo] = useState<MediaStream>();
-  const [roomId, setRoomId] = useState("");
-  const { videoStatus, setVideoStatus } = useVideo();
-  const [copy, setCopyStatus] = useState(false);
+  const [video, setVideo] = useState<MediaStream>(); // Video stream
+  const [roomId, setRoomId] = useState(""); // Room ID
+  const { videoStatus, setVideoStatus } = useVideo(); // Video on or off
+  const [copy, setCopyStatus] = useState(false); // Copy status
   const [userInfo, setUserInfo] = useState({
     name: "",
     email: "",
-  });
-  const router = useRouter();
-  const { user } = useIUser();
+  }); // User info
 
-  // get uuid
+  const router = useRouter();
+  // User data hook
+  const { addUser } = useUserContext();
+
+  // gets uuid
   let rid = v4().substring(0, 12);
   if (roomId === "") {
     setRoomId(rid);
@@ -43,13 +43,13 @@ const Preview = () => {
           setVideo(res);
         });
     } else {
-      cloaseVideo();
+      closeVideo();
     }
     getUserData();
   }, [videoStatus]);
 
   // Closes all the tracks
-  const cloaseVideo = () => {
+  const closeVideo = () => {
     if (video) {
       video.getTracks().forEach((track) => track.stop());
       setVideo(undefined);
@@ -86,15 +86,16 @@ const Preview = () => {
       rid,
       name: userInfo.name,
     };
-    user.rid = rid;
-    user.email = userInfo.email;
-    user.name = userInfo.name;
+    // Hook used to store user data
+    addUser({ emailUser1: userInfo.email, user1: userInfo.name, rid: rid });
+
     axios
       .post("/api/v1/create", data)
       .then(async (res: any) => {
         if (res.status === 200) {
           await createClientRTC(data);
         }
+        router.replace(`/room/${rid}`);
       })
       .catch((error) => {
         throw new Error(error);

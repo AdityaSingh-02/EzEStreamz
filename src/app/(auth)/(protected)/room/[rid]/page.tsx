@@ -1,24 +1,29 @@
-'use client';
-import {usePeer} from '@/Context/usePeer';
-import {useIUser} from '@/Context'
-import React, { useEffect } from 'react'
+"use client";
+import { usePeer } from "@/Context/usePeer";
+import { useUserContext } from "@/Context";
+import React, { useCallback, useEffect, useState } from "react";
+import type { IRoomUsers } from "@/types/IRoomUsers";
 
-const Room = () => {
-  const {peer,createOfefr} = usePeer();
-  const {user} = useIUser();
+const Room = (props: IRoomUsers) => {
+  const { peer, createOffer } = usePeer();
+  const [name, setName] = useState("");
+
+  // This is UserData Context
+  const { user } = useUserContext();
+
   useEffect(() => {
     handleJoins();
-  },[]);
+  }, []);
 
-  const handleJoins = async () => {
-    console.log("hey This is ", user.name)
-  }
+  const handleJoins = useCallback(async () => {
+    const offer = await createOffer();
+  }, [createOffer]);
 
   return (
     <>
-      <div>Room</div>
+      <div>Room {name}</div>
     </>
-  )
-}
+  );
+};
 
-export default Room
+export default Room;

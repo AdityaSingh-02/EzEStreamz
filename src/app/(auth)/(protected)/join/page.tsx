@@ -4,11 +4,9 @@ import dynamic from "next/dynamic";
 const ReactPlayer = dynamic(() => import("react-player"), { ssr: false });
 import { useVideo } from "@/Context";
 import { BsCameraVideo, BsCameraVideoOff } from "react-icons/bs";
-import { useIUser } from "@/Context";
 import type { IWebSocketInit } from "@/server/webSocket";
 import appwriteService, { AppwriteService } from "@/appwrite-service/config";
 import axios from "axios";
-import { error } from "console";
 
 const Preview = () => {
   const [video, setVideo] = useState<MediaStream>();
@@ -18,7 +16,7 @@ const Preview = () => {
     email: "",
   });
   const { videoStatus, setVideoStatus } = useVideo();
-  const { user } = useIUser();
+  
   useEffect(() => {
     getUserData();
     if (videoStatus) {
@@ -28,7 +26,7 @@ const Preview = () => {
           setVideo(res);
         });
     } else {
-      cloaseVideo();
+      closeVideo();
     }
   }, [videoStatus]);
 
@@ -38,7 +36,7 @@ const Preview = () => {
     });
   };
 
-  const cloaseVideo = () => {
+  const closeVideo = () => {
     if (video) {
       video.getTracks().forEach((track) => track.stop());
       setVideo(undefined);
@@ -50,30 +48,30 @@ const Preview = () => {
   };
 
   const joinRoom = async () => {
-    if (rid.length == 12) {
-      const data: IWebSocketInit = {
-        call: "join",
-        email: user.email,
-        name: user.name,
-        rid,
-      };
-      user.email = userInfo.email;
-      user.name = userInfo.name;
-      user.rid = rid;
+  //   if (rid.length == 12) {
+  //     // const data: IWebSocketInit = {
+  //     //   call: "join",
+  //     //   email: user.email,
+  //     //   name: user.name,
+  //     //   rid,
+  //     // };
+  //     // user.email = userInfo.email;
+  //     // user.name = userInfo.name;
+  //     // user.rid = rid;
 
-      axios.post("/api/v1/create", data).then((res) => {
-        if (res.status == 200) {
-          axios
-            .post("api/v1/rtcConnection", data)
-            .catch((error) => {
-              throw new Error(error);
-            })
-            .catch((error) => {
-              throw new Error(error);
-            });
-        }
-      });
-    }
+  //     axios.post("/api/v1/create", data).then((res) => {
+  //       if (res.status == 200) {
+  //         axios
+  //           .post("api/v1/rtcConnection", data)
+  //           .catch((error) => {
+  //             throw new Error(error);
+  //           })
+  //           .catch((error) => {
+  //             throw new Error(error);
+  //           });
+  //       }
+  //     });
+  //   }
   };
 
   return (

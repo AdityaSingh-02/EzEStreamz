@@ -1,9 +1,9 @@
 "use client";
 import type { Metadata } from "next";
 import React, { useState } from "react";
-import { useAuth } from "@/Context/index";
+import UserProvider, { useAuth } from "@/Context/index";
 import { useRouter } from "next/navigation";
-import { VideoProvider, UserProvider } from "@/Context";
+import { VideoProvider } from "@/Context";
 import { PeerProvider } from "@/Context/usePeer";
 
 export const metadata: Metadata = {
@@ -29,7 +29,9 @@ export default function RootLayout({
     <>
       <PeerProvider>
         <VideoProvider value={{ videoStatus, setVideoStatus }}>
-          <main className="w-[100%]">{children}</main>
+          <main className="w-[100%]">
+            <UserProvider>{children}</UserProvider>
+          </main>
         </VideoProvider>
       </PeerProvider>
     </>
