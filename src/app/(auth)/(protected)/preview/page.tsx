@@ -3,7 +3,7 @@ import React, { use, useEffect, useState } from "react";
 import dynamic from "next/dynamic";
 const ReactPlayer = dynamic(() => import("react-player"), { ssr: false });
 import { v4 } from "uuid";
-import { useVideo } from "@/Context";
+import { useVideo, useUserContext } from "@/Context";
 import { BsCameraVideo, BsCameraVideoOff } from "react-icons/bs";
 import { BiCopy } from "react-icons/bi";
 import { MdDone } from "react-icons/md";
@@ -27,6 +27,8 @@ const Preview = () => {
   });
   const router = useRouter();
 
+  const { addUser } = useUserContext();
+
   // get uuid
   let rid = v4().substring(0, 12);
   if (roomId === "") {
@@ -42,13 +44,13 @@ const Preview = () => {
           setVideo(res);
         });
     } else {
-      cloaseVideo();
+      closeVideo();
     }
     getUserData();
   }, [videoStatus]);
 
   // Closes all the tracks
-  const cloaseVideo = () => {
+  const closeVideo = () => {
     if (video) {
       video.getTracks().forEach((track) => track.stop());
       setVideo(undefined);
@@ -85,12 +87,16 @@ const Preview = () => {
       rid,
       name: userInfo.name,
     };
+    // Hook used to store user data
+    await addUser({ emailUser1: userInfo.email, user1: userInfo.name, rid: rid });
+
     axios
       .post("/api/v1/create", data)
       .then(async (res: any) => {
         if (res.status === 200) {
           await createClientRTC(data);
         }
+        router.replace(`/room/${rid}`);
       })
       .catch((error) => {
         throw new Error(error);

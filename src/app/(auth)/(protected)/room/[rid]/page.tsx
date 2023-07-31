@@ -1,26 +1,28 @@
 'use client';
 import {usePeer} from '@/Context/usePeer';
-import {useIUser} from '@/Context'
-import React, { useEffect } from 'react'
-import {Props} from '@/types/IRoomUsers'
+import {useUserContext} from '@/Context'
+import React, { useEffect, useState } from 'react'
+import type {IRoomUsers} from '@/types/IRoomUsers'
 
 
-const Room = (props:Props) => {
+const Room = (props:IRoomUsers) => {
   
   const {peer, createOffer} = usePeer();
+  const [name, setName] = useState("");
 
-  // const {user} = useIUser();
+  const {user} = useUserContext();
   useEffect(() => {
     handleJoins();
   },[]);
 
   const handleJoins = async () => {
-    // console.log("hey This is ", user.name)
+    setName(user.user1);
   }
 
   return (
     <>
-      <div>Room</div>
+      <div>Room {name}</div>
+
     </>
   )
 }

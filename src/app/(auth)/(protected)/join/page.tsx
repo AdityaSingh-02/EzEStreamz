@@ -4,7 +4,7 @@ import dynamic from "next/dynamic";
 const ReactPlayer = dynamic(() => import("react-player"), { ssr: false });
 import { useVideo } from "@/Context";
 import { BsCameraVideo, BsCameraVideoOff } from "react-icons/bs";
-import { useIUser } from "@/Context";
+// import { useIUser } from "@/Context";
 import type { IWebSocketInit } from "@/server/webSocket";
 import appwriteService, { AppwriteService } from "@/appwrite-service/config";
 import axios from "axios";

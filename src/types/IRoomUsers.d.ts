@@ -1,4 +1,4 @@
-export type Props = {
+export type IRoomUsers = {
     user1 : string;
     rid : string;
     user2 ?: string;

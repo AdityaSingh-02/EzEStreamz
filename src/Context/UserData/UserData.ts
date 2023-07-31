@@ -1,11 +1,16 @@
-import { createContext } from "react";
+import { createContext, useContext, useState } from "react";
+import type { IRoomUsers } from "@/types/IRoomUsers";
 
-export const IUserContext = createContext<{
-  intialData: {email: string, name: string, rid?: string};
-  userData : (email: string, name: string, rid?: string) => void;
-}>({
-  intialData: {email:'', name: '', rid:''},
-  userData:() => {},
+interface IUserContext {
+  user: IRoomUsers;
+  addUser: (user: IRoomUsers) => void;
+}
+
+export const IUserContext = createContext(<IUserContext>{
+  user: { emailUser1: "", emailUser2: "", rid: "", user1: "" },
+  addUser(user) {},
 });
 
-export const UserProvider = IUserContext.Provider;
+
+export const useUserContext = () => useContext(IUserContext);
+
