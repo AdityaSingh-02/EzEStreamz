@@ -8,7 +8,7 @@ import type { IWebSocketInit } from "@/server/webSocket";
 import appwriteService, { AppwriteService } from "@/appwrite-service/config";
 import axios from "axios";
 
-const Preview = () => {
+const Join = () => {
   const [video, setVideo] = useState<MediaStream>();
   const [rid, setRid] = useState<string>("");
   const [userInfo, setUserInfo] = useState({
@@ -16,7 +16,7 @@ const Preview = () => {
     email: "",
   });
   const { videoStatus, setVideoStatus } = useVideo();
-  
+
   useEffect(() => {
     getUserData();
     if (videoStatus) {
@@ -48,31 +48,48 @@ const Preview = () => {
   };
 
   const joinRoom = async () => {
-  //   if (rid.length == 12) {
-  //     // const data: IWebSocketInit = {
-  //     //   call: "join",
-  //     //   email: user.email,
-  //     //   name: user.name,
-  //     //   rid,
-  //     // };
-  //     // user.email = userInfo.email;
-  //     // user.name = userInfo.name;
-  //     // user.rid = rid;
-
-  //     axios.post("/api/v1/create", data).then((res) => {
-  //       if (res.status == 200) {
-  //         axios
-  //           .post("api/v1/rtcConnection", data)
-  //           .catch((error) => {
-  //             throw new Error(error);
-  //           })
-  //           .catch((error) => {
-  //             throw new Error(error);
-  //           });
-  //       }
-  //     });
-  //   }
+    if (rid.length == 12) {
+      const data: IWebSocketInit = {
+        call: "join",
+        email: userInfo.email,
+        name: userInfo.name,
+        rid,
+      };
+      axios
+        .post("/api/v1/create", data)
+        .then(async (res: any) => {
+          if (res.status == 200) {
+            createClientConnection(data);
+          }
+        })
+        .catch((err: any) => {
+          console.log(err);
+        });
+    }
   };
+
+  const createClientConnection = async (data: IWebSocketInit) => {
+    const ws = new WebSocket("ws://localhost:3001");
+    const { call, email, name, rid }: IWebSocketInit = data;
+    ws.onopen = () => {
+      console.log("Connected.");
+      // You can send messages here, as the connection is now open.
+      ws.send(call);
+    };
+
+    ws.onmessage = (message) => {
+      console.log(`Received message: ${message.data}`);
+      ws.send("Hello from server");
+    };
+
+    ws.onclose = () => {
+      console.log("WebSocket connection closed.");
+    };
+
+    ws.onerror = (error) => {
+      console.error("WebSocket error:", error);
+    };
+  }
 
   return (
     <>
@@ -110,4 +127,4 @@ const Preview = () => {
   );
 };
 
-export default Preview;
+export default Join;
