@@ -13,23 +13,22 @@ import appwriteService from "@/appwrite-service/config";
 
 import axios from "axios";
 
-// Test Import
-// import createClientRTC from "@/server/clientRTC";
 
 const Preview = () => {
-  const [video, setVideo] = useState<MediaStream>();
-  const [roomId, setRoomId] = useState("");
-  const { videoStatus, setVideoStatus } = useVideo();
-  const [copy, setCopyStatus] = useState(false);
+  const [video, setVideo] = useState<MediaStream>(); // Video stream
+  const [roomId, setRoomId] = useState(""); // Room ID
+  const { videoStatus, setVideoStatus } = useVideo(); // Video on or off
+  const [copy, setCopyStatus] = useState(false); // Copy status
   const [userInfo, setUserInfo] = useState({
     name: "",
     email: "",
-  });
-  const router = useRouter();
+  }); // User info
 
+  const router = useRouter();
+  // User data hook
   const { addUser } = useUserContext();
 
-  // get uuid
+  // gets uuid
   let rid = v4().substring(0, 12);
   if (roomId === "") {
     setRoomId(rid);
@@ -88,7 +87,7 @@ const Preview = () => {
       name: userInfo.name,
     };
     // Hook used to store user data
-    await addUser({ emailUser1: userInfo.email, user1: userInfo.name, rid: rid });
+    addUser({ emailUser1: userInfo.email, user1: userInfo.name, rid: rid });
 
     axios
       .post("/api/v1/create", data)
