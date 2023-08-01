@@ -21,8 +21,8 @@ export const webSocketInit = async (client: IWebSocketInit) => {
     // Gets message from the client and message contains method name;
     ws.on("message", (message: any) => {
       if (message == "join") {
-        console.log(`joined ${name}`);
-        ws.send("Join hua");
+        // console.log(`joined ${name}`);
+        ws.send(name);
 
         if (!emailToSocketMap.has(rid)) {
           emailToSocketMap.set(rid, []);

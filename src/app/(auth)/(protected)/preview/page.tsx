@@ -79,7 +79,7 @@ const Preview = () => {
   };
 
   // Manages user Join Data and Websocket connection
-  const handleJoinRoom = async () => {
+  const handleCreateRoom = async () => {
     const data: IWebSocketInit = {
       call: "join",
       email: userInfo.email,
@@ -113,7 +113,6 @@ const Preview = () => {
 
     ws.onmessage = (message) => {
       console.log(`Received message: ${message.data}`);
-      ws.send("Hello from server");
     };
 
     ws.onclose = () => {
@@ -141,7 +140,7 @@ const Preview = () => {
             </button>
           </h1>
           <button
-            onClick={handleJoinRoom}
+            onClick={handleCreateRoom}
             className="px-4 py-2 rounded-md bg-gray-500 mx-2 text-xl">
             Join
           </button>
