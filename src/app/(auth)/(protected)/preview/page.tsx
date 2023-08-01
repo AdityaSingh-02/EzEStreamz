@@ -113,7 +113,6 @@ const Preview = () => {
 
     ws.onmessage = (message) => {
       console.log(`Received message: ${message.data}`);
-      ws.send("Hello from server");
     };
 
     ws.onclose = () => {

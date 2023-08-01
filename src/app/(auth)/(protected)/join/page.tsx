@@ -7,6 +7,7 @@ import { BsCameraVideo, BsCameraVideoOff } from "react-icons/bs";
 import type { IWebSocketInit } from "@/server/webSocket";
 import appwriteService, { AppwriteService } from "@/appwrite-service/config";
 import axios from "axios";
+import { useUserContext } from "@/Context";
 
 const Join = () => {
   const [video, setVideo] = useState<MediaStream>();
@@ -16,6 +17,8 @@ const Join = () => {
     email: "",
   });
   const { videoStatus, setVideoStatus } = useVideo();
+
+  const { user, addUser } = useUserContext();
 
   useEffect(() => {
     getUserData();
@@ -50,11 +53,15 @@ const Join = () => {
   const joinRoom = async () => {
     if (rid.length == 12) {
       const data: IWebSocketInit = {
-        call: "join",
+        call: "call-user",
         email: userInfo.email,
         name: userInfo.name,
         rid,
       };
+      // Forwarding data with help of hook
+      addUser({ user2: userInfo.email, emailUser2: userInfo.email, rid });
+
+      // Post Request For extablishing connection and joining room
       axios
         .post("/api/v1/create", data)
         .then(async (res: any) => {
@@ -65,6 +72,8 @@ const Join = () => {
         .catch((err: any) => {
           console.log(err);
         });
+    } else {
+      return new Error("Room Id is not valid");
     }
   };
 
@@ -79,7 +88,6 @@ const Join = () => {
 
     ws.onmessage = (message) => {
       console.log(`Received message: ${message.data}`);
-      ws.send("Hello from server");
     };
 
     ws.onclose = () => {
@@ -89,7 +97,7 @@ const Join = () => {
     ws.onerror = (error) => {
       console.error("WebSocket error:", error);
     };
-  }
+  };
 
   return (
     <>
