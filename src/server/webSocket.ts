@@ -44,7 +44,7 @@ export const webSocketInit = async (client: IWebSocketInit) => {
       } else if (message == "call-user") {
         const fromEmail = socketToEmailMap.get(ws);
         const socketId = emailToSocketMap.get(email);
-        ws.send(JSON.stringify({ type: "call-made", offer, socketId }));
+        ws.send(JSON.stringify({ type: "call-made", offer, fromEmail }));
       }
     });
   });

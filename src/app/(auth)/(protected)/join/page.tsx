@@ -8,6 +8,7 @@ import type { IWebSocketInit } from "@/server/webSocket";
 import appwriteService, { AppwriteService } from "@/appwrite-service/config";
 import axios from "axios";
 import { useUserContext } from "@/Context";
+import { usePeer } from "@/Context/usePeer";
 
 const Join = () => {
   const [video, setVideo] = useState<MediaStream>();
@@ -19,6 +20,8 @@ const Join = () => {
   const { videoStatus, setVideoStatus } = useVideo();
 
   const { user, addUser } = useUserContext();
+
+  const { createOffer } = usePeer();
 
   useEffect(() => {
     getUserData();
@@ -52,11 +55,13 @@ const Join = () => {
 
   const joinRoom = async () => {
     if (rid.length == 12) {
+      const offer = createOffer();
       const data: IWebSocketInit = {
         call: "call-user",
         email: userInfo.email,
         name: userInfo.name,
         rid,
+        offer,
       };
       // Forwarding data with help of hook
       addUser({ user2: userInfo.email, emailUser2: userInfo.email, rid });
