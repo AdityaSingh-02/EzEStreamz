@@ -9,6 +9,7 @@ import appwriteService, { AppwriteService } from "@/appwrite-service/config";
 import axios from "axios";
 import { useUserContext } from "@/Context";
 import { usePeer } from "@/Context/usePeer";
+import { useRouter } from "next/navigation";
 
 const Join = () => {
   const [video, setVideo] = useState<MediaStream>();
@@ -20,7 +21,7 @@ const Join = () => {
   const { videoStatus, setVideoStatus } = useVideo();
 
   const { user, addUser } = useUserContext();
-
+  const router = useRouter();
   const { createOffer } = usePeer();
 
   useEffect(() => {
@@ -55,54 +56,56 @@ const Join = () => {
 
   const joinRoom = async () => {
     if (rid.length == 12) {
-      const offer = createOffer();
-      const data: IWebSocketInit = {
-        call: "call-user",
-        email: userInfo.email,
-        name: userInfo.name,
-        rid,
-        offer,
-      };
+      addUser({ user2: userInfo.email, emailUser2: userInfo.email, rid });
+      router.push(`/room/${rid}`);
+      // const offer = createOffer();
+      // const data: IWebSocketInit = {
+      //   call: "call-user",
+      //   email: userInfo.email,
+      //   name: userInfo.name,
+      //   rid,
+      //   offer,
+      // };
 
-      // Post Request For extablishing connection and joining room
-      axios
-        .post("/api/v1/create", data)
-        .then(async (res: any) => {
-          if (res.status == 200) {
-            // Forwarding data with help of hook
-            addUser({ user2: userInfo.email, emailUser2: userInfo.email, rid });
-            createClientConnection(data);
-          }
-        })
-        .catch((err: any) => {
-          console.log(err);
-        });
+      // // Post Request For establishing connection and joining room
+      // axios
+      //   .post("/api/v1/create", data)
+      //   .then(async (res: any) => {
+      //     if (res.status == 200) {
+      //       // Forwarding data with help of hook
+      //       addUser({ user2: userInfo.email, emailUser2: userInfo.email, rid });
+      //       createClientConnection(data);
+      //     }
+      //   })
+      //   .catch((err: any) => {
+      //     console.log(err);
+      //   });
     } else {
       return new Error("Room Id is not valid");
     }
   };
 
-  const createClientConnection = async (data: IWebSocketInit) => {
-    const ws = new WebSocket("ws://localhost:3001");
-    const { call, email, name, rid }: IWebSocketInit = data;
-    ws.onopen = () => {
-      console.log("Connected.");
-      // You can send messages here, as the connection is now open.
-      ws.send(call);
-    };
+  // const createClientConnection = async (data: IWebSocketInit) => {
+  //   const ws = new WebSocket("ws://localhost:3001");
+  //   const { call, email, name, rid }: IWebSocketInit = data;
+  //   ws.onopen = () => {
+  //     console.log("Connected.");
+  //     // You can send messages here, as the connection is now open.
+  //     ws.send(call);
+  //   };
 
-    ws.onmessage = (message) => {
-      console.log(`Received message: ${message.data}`);
-    };
+  //   ws.onmessage = (message) => {
+  //     console.log(`Received message: ${message.data}`);
+  //   };
 
-    ws.onclose = () => {
-      console.log("WebSocket connection closed.");
-    };
+  //   ws.onclose = () => {
+  //     console.log("WebSocket connection closed.");
+  //   };
 
-    ws.onerror = (error) => {
-      console.error("WebSocket error:", error);
-    };
-  };
+  //   ws.onerror = (error) => {
+  //     console.error("WebSocket error:", error);
+  //   };
+  // };
 
   return (
     <>
