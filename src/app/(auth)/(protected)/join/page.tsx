@@ -63,14 +63,14 @@ const Join = () => {
         rid,
         offer,
       };
-      // Forwarding data with help of hook
-      addUser({ user2: userInfo.email, emailUser2: userInfo.email, rid });
 
       // Post Request For extablishing connection and joining room
       axios
         .post("/api/v1/create", data)
         .then(async (res: any) => {
           if (res.status == 200) {
+            // Forwarding data with help of hook
+            addUser({ user2: userInfo.email, emailUser2: userInfo.email, rid });
             createClientConnection(data);
           }
         })
