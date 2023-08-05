@@ -28,7 +28,7 @@ export const PeerProvider = (props: any) => {
     return offer;
   };
 
-  const createAnswer = async (offer: any) => {
+  const createAnswer = async (offer: RTCSessionDescriptionInit) => {
     await peer.setRemoteDescription(offer);
     const answer = await peer.createAnswer();
     await peer.setLocalDescription(answer);

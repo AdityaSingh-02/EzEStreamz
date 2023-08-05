@@ -53,8 +53,10 @@ const Room = (props: IRoomUsers) => {
     };
 
     ws.onmessage = async (message) => {
-      console.log(`Received message: ${message.data}`);
-      await createAnswer(message.data);
+      
+      const d = JSON.parse(message.data);
+      console.log(d);
+      await createAnswer(d);
     };
 
     ws.onclose = () => {
