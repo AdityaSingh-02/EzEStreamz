@@ -3,9 +3,9 @@ import React, { createContext, useContext, useMemo } from "react";
 const PeerContext = createContext<any>(null);
 
 export const usePeer = () => {
-    const data = useContext(PeerContext)
-    return data
-}
+  const data = useContext(PeerContext);
+  return data;
+};
 
 export const PeerProvider = (props: any) => {
   const servers: RTCConfiguration = {
@@ -20,16 +20,25 @@ export const PeerProvider = (props: any) => {
     ],
   };
 
-  const peer = useMemo<any>(() => new RTCPeerConnection(servers), [])
+  const peer = useMemo<any>(() => new RTCPeerConnection(servers), []);
 
   const createOffer = async () => {
     const offer = await peer.createOffer();
-    await peer.setLocalDescription(offer)
+    await peer.setLocalDescription(offer);
     return offer;
-  }
+  };
+
+  const createAnswer = async (offer: RTCSessionDescriptionInit) => {
+    await peer.setRemoteDescription(offer);
+    const answer = await peer.createAnswer();
+    await peer.setLocalDescription(answer);
+    return answer;
+  };
 
   return (
-    <PeerContext.Provider value={{peer, createOffer}}>{props.children}</PeerContext.Provider>
+    <PeerContext.Provider value={{ peer, createOffer, createAnswer }}>
+      {props.children}
+    </PeerContext.Provider>
   );
 };
 

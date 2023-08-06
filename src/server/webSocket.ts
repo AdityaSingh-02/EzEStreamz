@@ -24,12 +24,12 @@ export const webSocketInit = async (client: IWebSocketInit) => {
         // console.log(`joined ${name}`);
         ws.send(name);
 
-        if (!emailToSocketMap.has(rid)) {
-          emailToSocketMap.set(rid, []);
+        if (!emailToSocketMap.has(email)) {
+          emailToSocketMap.set(email, rid);
         }
 
-        emailToSocketMap.get(rid).push({ email, ws });
-        socketToEmailMap.set(ws, email);
+        emailToSocketMap.set(email, rid);
+        socketToEmailMap.set(rid, email);
 
         // Broadcasting to everyone in the room except the sender
         const connectionsInRoom = emailToSocketMap.get(rid);
@@ -42,9 +42,9 @@ export const webSocketInit = async (client: IWebSocketInit) => {
           }
         }
       } else if (message == "call-user") {
-        const fromEmail = socketToEmailMap.get(ws);
+        const fromEmail = socketToEmailMap.get(rid);
         const socketId = emailToSocketMap.get(email);
-        ws.send(JSON.stringify({ type: "call-made", offer, socketId }));
+        ws.send(JSON.stringify(offer));
       }
     });
   });
