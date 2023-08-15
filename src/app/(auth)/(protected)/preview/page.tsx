@@ -18,7 +18,7 @@ const Preview = () => {
   const [video, setVideo] = useState<MediaStream>(); // Video stream
   const [roomId, setRoomId] = useState(""); // Room ID
   const { videoStatus, setVideoStatus } = useVideo(); // Video on or off
-  const [copy, setCopyStatus] = useState(false); // Copy status
+  const [copy, setCopyStatus] = useState(false); // Copy rid status
   const [userInfo, setUserInfo] = useState({
     name: "",
     email: "",
@@ -83,11 +83,11 @@ const Preview = () => {
     const data: IWebSocketInit = {
       call: "join",
       email: userInfo.email,
-      rid,
+      rid:roomId,
       name: userInfo.name,
     };
     // Hook used to store user data
-    addUser({ emailUser1: userInfo.email, user1: userInfo.name, rid: rid });
+    addUser({ emailUser1: userInfo.email, user1: userInfo.name, rid: roomId });
 
     axios
       .post("/api/v1/create", data)
@@ -95,7 +95,7 @@ const Preview = () => {
         if (res.status === 200) {
           await createClientRTC(data);
         }
-        router.replace(`/room/${rid}`);
+        router.replace(`/room/${roomId}`);
       })
       .catch((error) => {
         throw new Error(error);
@@ -104,7 +104,7 @@ const Preview = () => {
 
   async function createClientRTC(data: IWebSocketInit) {
     const ws = new WebSocket("ws://localhost:3001");
-    const { call, email, name, rid }: IWebSocketInit = data;
+    const { call, email, name, rid: roomId }: IWebSocketInit = data;
     ws.onopen = () => {
       console.log("Connected.");
       // You can send messages here, as the connection is now open.
