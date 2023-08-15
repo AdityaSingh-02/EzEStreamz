@@ -33,14 +33,14 @@ export const webSocketInit = async (client: IWebSocketInit) => {
 
         // Broadcasting to everyone in the room except the sender
         const connectionsInRoom = emailToSocketMap.get(rid);
-        for (const {
-          ws: connection,
-          email: connectedEmail,
-        } of connectionsInRoom) {
-          if (connectedEmail !== email) {
-            connection.send(JSON.stringify({ type: "new-user", email }));
-          }
-        }
+        // for (const {
+        //   ws: connection,
+        //   email: connectedEmail,
+        // } of connectionsInRoom) {
+        //   if (connectedEmail !== email) {
+        //     connection.send(JSON.stringify({ type: "new-user", email }));
+        //   }
+        // }
       } else if (message == "call-user") {
         const fromEmail = socketToEmailMap.get(rid);
         const socketId = emailToSocketMap.get(email);
