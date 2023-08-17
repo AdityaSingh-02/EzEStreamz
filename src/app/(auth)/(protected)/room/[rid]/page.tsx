@@ -53,7 +53,6 @@ const Room = (props: IRoomUsers) => {
     };
 
     ws.onmessage = async (message) => {
-      
       const d = JSON.parse(message.data);
       console.log(d);
       await createAnswer(d);
@@ -68,10 +67,12 @@ const Room = (props: IRoomUsers) => {
     };
   };
 
-
   return (
     <>
-      <div>Room {name}</div>
+      <div className="flex w-[100%] items-center h-screen ">
+        <div className="w-[70%] flex justify-center items-center border-2 border-red-500 h-[90%] rounded-2xl m-10">Left</div>
+        <div className="w-[30%] flex justify-center items-center border-2 border-red-500 h-[90%] m-10 rounded-2xl">right</div>
+      </div>
     </>
   );
 };
