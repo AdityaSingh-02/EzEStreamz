@@ -1,6 +1,6 @@
 "use client";
 import { usePeer } from "@/Context/usePeer";
-import { useUserContext } from "@/Context";
+import { useVideo, useUserContext } from "@/Context";
 import React, { useCallback, useEffect, useState } from "react";
 import type { IWebSocketInit } from "@/types/socketData";
 // import Router from "next/navigation";
@@ -8,13 +8,14 @@ import { usePathname } from "next/navigation";
 import axios from "axios";
 
 const Room = () => {
-  const { peer, createOffer, createAnswer } = usePeer();
   const [user2, setUser2] = useState("");
+  const [streamVideo, setStreamVideo] = useState<MediaStream>();
+  const { videoStatus, setVideoStatus } = useVideo();
+  const { peer, createOffer, createAnswer } = usePeer();
+  const { user } = useUserContext();
 
   const pathName = usePathname();
   const rid = pathName.split("/")[2];
-  // This is UserData Context
-  const { user } = useUserContext();
 
   useEffect(() => {
     user.user2 ? setUser2(user.user2) : null;
@@ -51,11 +52,7 @@ const Room = () => {
       ws.send(call);
     };
 
-    ws.onmessage = async (message) => {
-      // const d = JSON.parse(message.data);
-      // console.log(d);
-      // await createAnswer(d);
-    };
+    ws.onmessage = async (message) => {};
 
     ws.onclose = () => {
       console.log("WebSocket connection closed.");
@@ -69,9 +66,9 @@ const Room = () => {
   return (
     <>
       <div className="flex w-[100%] items-center h-screen ">
-        <div className="w-[70%] flex justify-center items-center border-2 border-red-500 h-[90%] rounded-2xl m-10">Video</div>
-        <div className="w-[30%] flex justify-center items-center border-2 border-red-500 h-[90%] m-10 rounded-2xl">
-          <div>my-vide</div>
+        <div className="w-[70%] flex justify-center items-center border-2 border-red-500 h-[80%] rounded-2xl m-10"></div>
+        <div className="w-[30%] flex flex-col justify-center items-center border-2 border-red-500 h-[90%] m-10 rounded-2xl">
+          <div>my-video</div>
           <div>Control </div>
         </div>
       </div>
