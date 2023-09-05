@@ -2,15 +2,13 @@
 import { usePeer } from "@/Context/usePeer";
 import { useUserContext } from "@/Context";
 import React, { useCallback, useEffect, useState } from "react";
-import type { IRoomUsers } from "@/types/IRoomUsers";
 import type { IWebSocketInit } from "@/types/socketData";
 // import Router from "next/navigation";
 import { usePathname } from "next/navigation";
 import axios from "axios";
 
-const Room = (props: IRoomUsers) => {
+const Room = () => {
   const { peer, createOffer, createAnswer } = usePeer();
-  const [name, setName] = useState("");
   const [user2, setUser2] = useState("");
 
   const pathName = usePathname();
@@ -33,6 +31,7 @@ const Room = (props: IRoomUsers) => {
       rid,
       offer,
     };
+    // Creating Room and sending data
     axios
       .post("/api/v1/create", data)
       .then(async (res: any) => {
@@ -53,9 +52,9 @@ const Room = (props: IRoomUsers) => {
     };
 
     ws.onmessage = async (message) => {
-      const d = JSON.parse(message.data);
-      console.log(d);
-      await createAnswer(d);
+      // const d = JSON.parse(message.data);
+      // console.log(d);
+      // await createAnswer(d);
     };
 
     ws.onclose = () => {
@@ -70,8 +69,11 @@ const Room = (props: IRoomUsers) => {
   return (
     <>
       <div className="flex w-[100%] items-center h-screen ">
-        <div className="w-[70%] flex justify-center items-center border-2 border-red-500 h-[90%] rounded-2xl m-10">Left</div>
-        <div className="w-[30%] flex justify-center items-center border-2 border-red-500 h-[90%] m-10 rounded-2xl">right</div>
+        <div className="w-[70%] flex justify-center items-center border-2 border-red-500 h-[90%] rounded-2xl m-10">Video</div>
+        <div className="w-[30%] flex justify-center items-center border-2 border-red-500 h-[90%] m-10 rounded-2xl">
+          <div>my-vide</div>
+          <div>Control </div>
+        </div>
       </div>
     </>
   );
