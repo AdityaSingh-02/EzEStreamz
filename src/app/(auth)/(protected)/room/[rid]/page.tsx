@@ -6,10 +6,11 @@ import type { IWebSocketInit } from "@/types/socketData";
 // import Router from "next/navigation";
 import { usePathname } from "next/navigation";
 import axios from "axios";
+import ReactPlayer from "react-player";
 
 const Room = () => {
   const [user2, setUser2] = useState("");
-  const [streamVideo, setStreamVideo] = useState<MediaStream>();
+  const [myVideo, setMyVideo] = useState<MediaStream>();
   const { videoStatus, setVideoStatus } = useVideo();
   const { peer, createOffer, createAnswer } = usePeer();
   const { user } = useUserContext();
@@ -22,7 +23,27 @@ const Room = () => {
     if (user2 !== "") {
       handleJoins();
     }
+
+    if (videoStatus) {
+      navigator.mediaDevices
+        .getUserMedia({ video: true, audio: true })
+        .then((res) => setMyVideo(res));
+    } else {
+      closeVideoStream();
+    }
   }, [user, user2]);
+
+  // Handles Video Closing
+  const closeVideoStream = () => {
+    if (myVideo) {
+      myVideo.getTracks().forEach((track) => track.stop());
+      setMyVideo(undefined);
+    }
+  };
+
+  const toggleMyVideo = () => {
+    setVideoStatus(!videoStatus);
+  };
 
   const handleJoins = useCallback(async () => {
     const offer = await createOffer();
@@ -66,9 +87,13 @@ const Room = () => {
   return (
     <>
       <div className="flex w-[100%] items-center h-screen ">
-        <div className="w-[70%] flex justify-center items-center border-2 border-red-500 h-[80%] rounded-2xl m-10"></div>
+        <div className="w-[70%] flex justify-center items-center border-2 border-red-500 h-[80%] rounded-2xl m-10">
+          <ReactPlayer url={myVideo} playing muted height={500} width={800} />
+        </div>
         <div className="w-[30%] flex flex-col justify-center items-center border-2 border-red-500 h-[90%] m-10 rounded-2xl">
-          <div>my-video</div>
+          <div>
+            <button onClick={toggleMyVideo}>TOGGLE</button>
+          </div>
           <div>Control </div>
         </div>
       </div>
