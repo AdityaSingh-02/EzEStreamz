@@ -7,6 +7,7 @@ import type { IWebSocketInit } from "@/types/socketData";
 import { usePathname } from "next/navigation";
 import axios from "axios";
 import ReactPlayer from "react-player";
+import { BsCameraVideo, BsCameraVideoOff } from "react-icons/bs";
 
 const Room = () => {
   const [user2, setUser2] = useState("");
@@ -87,14 +88,25 @@ const Room = () => {
   return (
     <>
       <div className="flex w-[100%] items-center h-screen ">
-        <div className="w-[70%] flex justify-center items-center border-2 border-red-500 h-[80%] rounded-2xl m-10">
+        <div className="w-[70%] flex justify-center items-center border-2 border-gray-800 h-[80%] rounded-2xl m-10">
           <ReactPlayer url={myVideo} playing muted height={500} width={800} />
         </div>
-        <div className="w-[30%] flex flex-col justify-center items-center border-2 border-red-500 h-[90%] m-10 rounded-2xl">
-          <div>
-            <button onClick={toggleMyVideo}>TOGGLE</button>
+        <div className="w-[30%] flex flex-col justify-between py-10 border-2 px-7 border-gray-800 h-[90%] m-10 rounded-2xl">
+          <div className="border-2 border-red-400 h-[30%] rounded-2xl flex justify-center items-center">
+            MyVideo
           </div>
-          <div>Control </div>
+          <div className="border-2 border-red-400 h-[50%] rounded-2xl flex justify-center items-center">
+            Details : WIP BETA
+          </div>
+          <div className=" flex justify-center ">
+            <button
+              onClick={toggleMyVideo}
+              className={`px-4 py-2 flex justify-center rounded-md ${
+                videoStatus ? "bg-red-500" : "bg-green-500"
+              } mx-2 text-xl`}>
+              {videoStatus ? <BsCameraVideoOff /> : <BsCameraVideo />}
+            </button>
+          </div>
         </div>
       </div>
     </>
