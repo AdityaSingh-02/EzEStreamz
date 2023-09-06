@@ -12,7 +12,7 @@ const Room = () => {
   const [user2, setUser2] = useState("");
   const [myVideo, setMyVideo] = useState<MediaStream>();
   const { videoStatus, setVideoStatus } = useVideo();
-  const { peer, createOffer, createAnswer } = usePeer();
+  const { createOffer } = usePeer();
   const { user } = useUserContext();
 
   const pathName = usePathname();
@@ -20,9 +20,9 @@ const Room = () => {
 
   useEffect(() => {
     user.user2 ? setUser2(user.user2) : null;
-    if (user2 !== "") {
-      handleJoins();
-    }
+    // if (user2 !== "") {
+    //   handleJoins();
+    // }
 
     if (videoStatus) {
       navigator.mediaDevices
@@ -31,7 +31,7 @@ const Room = () => {
     } else {
       closeVideoStream();
     }
-  }, [user, user2]);
+  }, [videoStatus, user, user2]);
 
   // Handles Video Closing
   const closeVideoStream = () => {
