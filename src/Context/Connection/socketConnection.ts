@@ -1,14 +1,18 @@
-import { createContext } from "react";
+import { createContext, useContext, Dispatch, SetStateAction } from "react";
+import { ISocketConnection } from "@/types/ISocketConn";
 
-interface IsocketConnection {
+export interface IsocketConnection {
   connectionStatus: boolean;
-  setConnection: (url: string) => void;
+  setConnectionStatus: (status: boolean) => void;
+  setURL: (url: string) => void;
 }
 
-const socketConnectionCTX = createContext(<IsocketConnection>{
+export const socketConnectionCTX = createContext(<IsocketConnection>{
   connectionStatus: false,
-  setConnection: () => {},
+  setConnectionStatus: {},
+  setURL(url) {},
 });
 
-export const socketConnectionProvider = socketConnectionCTX.Provider;
+export const SocketConnectionProvider = socketConnectionCTX.Provider;
+export const useSocketConnection = () => useContext(socketConnectionCTX);
 export default socketConnectionCTX;
