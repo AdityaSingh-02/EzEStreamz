@@ -1,6 +1,6 @@
 import { ReactNode, useState } from "react";
 import { ISocketConnection } from "@/types/ISocketConn";
-import { socketConnectionCTX } from "./socketConnection";
+import { ISocketConnectionCTX } from "./socketConnection";
 
 interface IProps {
   children: ReactNode;
@@ -17,10 +17,10 @@ export const SocketProvider = ({ children }: IProps) => {
   };
 
   return (
-    <socketConnectionCTX.Provider
+    <ISocketConnectionCTX.Provider
       value={{ connectionStatus, setConnectionStatus, setURL }}>
       {children}
-    </socketConnectionCTX.Provider>
+    </ISocketConnectionCTX.Provider>
   );
 };
 

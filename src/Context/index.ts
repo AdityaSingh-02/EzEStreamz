@@ -10,6 +10,5 @@ export { IUserContext, useUserContext } from "./UserData/UserData";
 export default UserProvider;
 
 // Socket connection
-export { SocketConnectionProvider } from "./Connection/socketConnection";
-export { useSocket } from "./Connection/useSocket";
+export { useSocketConnection } from "./Connection/socketConnection";
 export { SocketProvider } from "./Connection/socketProvider";

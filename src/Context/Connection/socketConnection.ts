@@ -7,12 +7,10 @@ export interface IsocketConnection {
   setURL: (url: string) => void;
 }
 
-export const socketConnectionCTX = createContext(<IsocketConnection>{
+export const ISocketConnectionCTX = createContext(<IsocketConnection>{
   connectionStatus: false,
   setConnectionStatus: {},
   setURL(url) {},
 });
 
-export const SocketConnectionProvider = socketConnectionCTX.Provider;
-export const useSocketConnection = () => useContext(socketConnectionCTX);
-export default socketConnectionCTX;
+export const useSocketConnection = () => useContext(ISocketConnectionCTX);
