@@ -5,12 +5,14 @@ export interface IsocketConnection {
   connectionStatus: boolean;
   setConnectionStatus: (status: boolean) => void;
   setURL: (url: string) => void;
+  getURL(): void;
 }
 
 export const ISocketConnectionCTX = createContext(<IsocketConnection>{
   connectionStatus: false,
   setConnectionStatus: {},
   setURL(url) {},
+  getURL() {},
 });
 
 export const useSocketConnection = () => useContext(ISocketConnectionCTX);

@@ -1,5 +1,4 @@
 import { ReactNode, useState } from "react";
-import { ISocketConnection } from "@/types/ISocketConn";
 import { ISocketConnectionCTX } from "./socketConnection";
 
 interface IProps {
@@ -8,7 +7,7 @@ interface IProps {
 
 export const SocketProvider = ({ children }: IProps) => {
   const [connectionStatus, setConnectionStatus] = useState(false);
-  const [url, setURL] = useState<string>("");
+  const [getURL, setURL] = useState<string>("");
 
   const urlSetterFn = (u: string) => {
     if (connectionStatus) {
@@ -18,7 +17,14 @@ export const SocketProvider = ({ children }: IProps) => {
 
   return (
     <ISocketConnectionCTX.Provider
-      value={{ connectionStatus, setConnectionStatus, setURL }}>
+      value={{
+        connectionStatus,
+        setConnectionStatus,
+        setURL,
+        getURL() {
+          return getURL;
+        },
+      }}>
       {children}
     </ISocketConnectionCTX.Provider>
   );
