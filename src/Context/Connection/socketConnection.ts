@@ -4,7 +4,7 @@ import { ISocketConnection } from "@/types/ISocketConn";
 export interface IsocketConnection {
   connectionStatus: boolean;
   setConnectionStatus: (status: boolean) => void;
-  setURL: (url: string) => void;
+  setURL: (url: WebSocket) => void;
   getURL(): void;
 }
 

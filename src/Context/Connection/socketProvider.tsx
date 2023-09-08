@@ -7,9 +7,9 @@ interface IProps {
 
 export const SocketProvider = ({ children }: IProps) => {
   const [connectionStatus, setConnectionStatus] = useState(false);
-  const [getURL, setURL] = useState<string>("");
+  const [getURL, setURL] = useState<WebSocket>();
 
-  const urlSetterFn = (u: string) => {
+  const urlSetterFn = (u: WebSocket) => {
     if (connectionStatus) {
       setURL(u);
     }
