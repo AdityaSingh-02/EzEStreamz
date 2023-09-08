@@ -12,3 +12,4 @@ export default UserProvider;
 // Socket connection
 export { SocketConnectionProvider } from "./Connection/socketConnection";
 export { useSocket } from "./Connection/useSocket";
+export { SocketProvider } from "./Connection/socketProvider";

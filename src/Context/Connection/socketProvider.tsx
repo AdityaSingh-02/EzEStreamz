@@ -6,7 +6,7 @@ interface IProps {
   children: ReactNode;
 }
 
-const socketProvider = ({ children }: IProps) => {
+export const SocketProvider = ({ children }: IProps) => {
   const [connectionStatus, setConnectionStatus] = useState(false);
   const [url, setURL] = useState<string>("");
 
@@ -23,3 +23,5 @@ const socketProvider = ({ children }: IProps) => {
     </socketConnectionCTX.Provider>
   );
 };
+
+export default SocketProvider;

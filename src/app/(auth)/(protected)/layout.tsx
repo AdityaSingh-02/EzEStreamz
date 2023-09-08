@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import UserProvider, {
   VideoProvider,
-  SocketConnectionProvider,
+  SocketProvider,
   useAuth,
 } from "@/Context";
 import { PeerProvider } from "@/Context/usePeer";
@@ -33,11 +33,11 @@ export default function RootLayout({
     <>
       <PeerProvider>
         <VideoProvider value={{ videoStatus, setVideoStatus }}>
-          {/* <SocketConnectionProvider value={{ connectionStatus, setConnection }}> */}
-            <main className="w-[100%]">
-              <UserProvider>{children}</UserProvider>
-            </main>
-          {/* </SocketConnectionProvider> */}
+          <main className="w-[100%]">
+            <UserProvider>
+              <SocketProvider>{children}</SocketProvider>
+            </UserProvider>
+          </main>
         </VideoProvider>
       </PeerProvider>
     </>
