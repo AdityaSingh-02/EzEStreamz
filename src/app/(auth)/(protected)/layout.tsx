@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import React from "react";
+import ChildLayout from "./childLayout";
 
 export const metadata: Metadata = {
   title: "Welcome",
@@ -14,13 +15,7 @@ export default function RootLayout({
 
   return (
     <>
-      <PeerProvider>
-        <VideoProvider value={{ videoStatus, setVideoStatus }}>
-          <main className="w-[100%]">
-            <UserProvider>{children}</UserProvider>
-          </main>
-        </VideoProvider>
-      </PeerProvider>
+      <ChildLayout>{children}</ChildLayout>
     </>
   );
 }
