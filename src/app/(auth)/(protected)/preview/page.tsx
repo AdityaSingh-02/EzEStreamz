@@ -3,30 +3,37 @@ import React, { use, useEffect, useState } from "react";
 import dynamic from "next/dynamic";
 const ReactPlayer = dynamic(() => import("react-player"), { ssr: false });
 import { v4 } from "uuid";
-import { useVideo, useUserContext } from "@/Context";
+
+// Contexts
+import { useVideo, useUserContext, useSocketConnection } from "@/Context";
+
+// Icons
 import { BsCameraVideo, BsCameraVideoOff } from "react-icons/bs";
 import { BiCopy } from "react-icons/bi";
 import { MdDone } from "react-icons/md";
+
 import { useRouter } from "next/navigation";
 import type { IWebSocketInit } from "@/server/webSocket";
 import appwriteService from "@/appwrite-service/config";
 
 import axios from "axios";
 
-
 const Preview = () => {
   const [video, setVideo] = useState<MediaStream>(); // Video stream
   const [roomId, setRoomId] = useState(""); // Room ID
   const { videoStatus, setVideoStatus } = useVideo(); // Video on or off
   const [copy, setCopyStatus] = useState(false); // Copy rid status
+  const [ws, setWs] = useState<WebSocket>(new WebSocket("ws://localhost:3001")); // Websocket connection
   const [userInfo, setUserInfo] = useState({
     name: "",
     email: "",
   }); // User info
 
   const router = useRouter();
-  // User data hook
+  // Using Contexts
   const { addUser } = useUserContext();
+  const { connectionStatus, setConnectionStatus, setURL } =
+    useSocketConnection();
 
   // gets uuid
   let rid = v4().substring(0, 12);
@@ -83,7 +90,7 @@ const Preview = () => {
     const data: IWebSocketInit = {
       call: "join",
       email: userInfo.email,
-      rid:roomId,
+      rid: roomId,
       name: userInfo.name,
     };
     // Hook used to store user data
@@ -103,7 +110,8 @@ const Preview = () => {
   };
 
   async function createClientRTC(data: IWebSocketInit) {
-    const ws = new WebSocket("ws://localhost:3001");
+    setURL(ws);
+    setConnectionStatus(true);
     const { call, email, name, rid: roomId }: IWebSocketInit = data;
     ws.onopen = () => {
       console.log("Connected.");
