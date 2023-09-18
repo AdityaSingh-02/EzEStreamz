@@ -4,7 +4,7 @@ import ChildLayout from "./childLayout";
 
 export const metadata: Metadata = {
   title: "Welcome",
-  description: "Video call",
+  description: "Get Started with video call",
 };
 
 export default function RootLayout({
