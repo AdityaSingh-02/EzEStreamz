@@ -1,13 +1,5 @@
-"use client";
 import type { Metadata } from "next";
-import React, { useState } from "react";
-import { useRouter } from "next/navigation";
-import UserProvider, {
-  VideoProvider,
-  SocketProvider,
-  useAuth,
-} from "@/Context";
-import { PeerProvider } from "@/Context/usePeer";
+import React from "react";
 
 export const metadata: Metadata = {
   title: "Welcome",
@@ -19,24 +11,13 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const router = useRouter();
-  const { authStatus } = useAuth();
-  const [videoStatus, setVideoStatus] = useState(false);
-  const [connectionStatus, setConnection] = useState(false);
-
-  if (!authStatus) {
-    router.replace("/");
-    return <></>;
-  }
 
   return (
     <>
       <PeerProvider>
         <VideoProvider value={{ videoStatus, setVideoStatus }}>
           <main className="w-[100%]">
-            <UserProvider>
-              <SocketProvider>{children}</SocketProvider>
-            </UserProvider>
+            <UserProvider>{children}</UserProvider>
           </main>
         </VideoProvider>
       </PeerProvider>
