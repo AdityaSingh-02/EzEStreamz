@@ -12,7 +12,5 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  return (
-      <main className="w-[100%]">{children}</main>
-  );
+  return <main className="w-[100%]">{children}</main>;
 }

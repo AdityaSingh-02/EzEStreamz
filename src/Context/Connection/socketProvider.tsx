@@ -24,7 +24,8 @@ export const SocketProvider = ({ children }: IProps) => {
         getURL() {
           return getURL;
         },
-      }}>
+      }}
+    >
       {children}
     </ISocketConnectionCTX.Provider>
   );

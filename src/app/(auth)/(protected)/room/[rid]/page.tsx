@@ -103,7 +103,8 @@ const Room = () => {
               onClick={toggleMyVideo}
               className={`px-4 py-2 flex justify-center rounded-md ${
                 videoStatus ? "bg-red-500" : "bg-green-500"
-              } mx-2 text-xl`}>
+              } mx-2 text-xl`}
+            >
               {videoStatus ? <BsCameraVideoOff /> : <BsCameraVideo />}
             </button>
           </div>

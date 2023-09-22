@@ -79,7 +79,8 @@ const Join = () => {
           <button
             aria-label="join"
             onClick={joinRoom}
-            className="px-4 py-2 rounded-md bg-gray-500 mx-2 text-xl">
+            className="px-4 py-2 rounded-md bg-gray-500 mx-2 text-xl"
+          >
             Join
           </button>
           <button
@@ -87,7 +88,8 @@ const Join = () => {
             aria-label={`${videoStatus ? "Turn off" : "Turn on"} camera`}
             className={`px-4 py-2 flex justify-center rounded-md ${
               videoStatus ? "bg-red-500" : "bg-gray-500"
-            } mx-2 text-xl`}>
+            } mx-2 text-xl`}
+          >
             {videoStatus ? <BsCameraVideoOff /> : <BsCameraVideo />}
           </button>
           <p className="text-black text-sm mx-auto">

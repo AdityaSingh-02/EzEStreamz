@@ -11,6 +11,4 @@ export const IUserContext = createContext(<IUserContext>{
   addUser(user) {},
 });
 
-
 export const useUserContext = () => useContext(IUserContext);
-

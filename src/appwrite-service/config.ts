@@ -18,7 +18,7 @@ export class AppwriteService {
         ID.unique(),
         email,
         password,
-        name
+        name,
       );
       if (userAccount) {
         return this.login({ email, password });
@@ -62,6 +62,6 @@ export class AppwriteService {
   }
 }
 
-const appwriteService = new AppwriteService()
+const appwriteService = new AppwriteService();
 
-export default appwriteService
+export default appwriteService;
