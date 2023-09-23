@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 
 import { Server } from 'socket.io';
 
-export const POST = async (res: Response) => {
+export const GET = async (res: any) => {
 	const io = new Server(res.socket.server);
 	res.socket.server.io = io;
 	io.on('connection', (socket) => {
