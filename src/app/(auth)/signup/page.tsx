@@ -30,7 +30,8 @@ const Signup = () => {
             Have a account already?{" "}
             <button
               onClick={() => router.push("/login")}
-              className="text-red-500">
+              className="text-red-500"
+            >
               Login
             </button>
           </p>

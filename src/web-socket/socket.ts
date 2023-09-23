@@ -8,11 +8,11 @@ const createWebSocket = async () => {
   const websocket = new server({
     httpServer: httpserver,
   });
-  
+
   websocket.on("request", (request) => {
     connection = request.accept(null, request.origin);
   });
-  return connection
+  return connection;
 };
 
 export default createWebSocket;

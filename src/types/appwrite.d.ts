@@ -1,10 +1,10 @@
 export type CreateUser = {
-    email: string;
-    password: string;
-    name: string;
-}
+  email: string;
+  password: string;
+  name: string;
+};
 
 export type User = {
-    email: string;
-    password: string;
-}
+  email: string;
+  password: string;
+};
