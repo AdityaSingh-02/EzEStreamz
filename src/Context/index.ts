@@ -11,4 +11,7 @@ export default UserProvider;
 
 // Socket connection
 export { useSocketConnection } from "./Connection/socketConnection";
-export { SocketProvider } from "./Connection/socketProvider";
+// export { SocketProvider } from "./Connection/socketProvider";
+
+// SocketIO connection
+export {SocketProvider} from './Socket/socket-provider'

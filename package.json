@@ -15,6 +15,7 @@
     "appwrite": "^11.0.0",
     "autoprefixer": "10.4.14",
     "axios": "^1.4.0",
+    "cors": "^2.8.5",
     "encoding": "^0.1.13",
     "eslint": "8.44.0",
     "eslint-config-next": "13.4.9",
