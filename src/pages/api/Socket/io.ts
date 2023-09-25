@@ -10,6 +10,7 @@ export default function handler(req:any, res: any) {
 
   const io = new Server(res.socket.server, {
     path: "/api/socket_io",
+    // @ts-ignore
     addTrailingSlash: false,
   });
   res.socket.server.io = io;
