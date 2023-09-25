@@ -1,47 +1,26 @@
-import { Server as NetServer } from 'http';
-import { NextApiRequest } from 'next';
-import { Server as ServerIo } from 'socket.io';
-import cors from 'cors';
-import { NextApiResponseServerIO } from '@/types/SocketIO';
+import { Server } from "socket.io";
+import onSocketConnection from "@/Helpers/onSocketConnection";
 
-const corsMiddleware = cors();
+export default function handler(req:any, res: any) {
+  if (res.socket.server.io) {
+    console.log("Server already started!");
+    res.end();
+    return;
+  }
 
-export const config = {
-	api: {
-		bodyParser: false,
-	},
-};
+  const io = new Server(res.socket.server, {
+    path: "/api/socket_io",
+    addTrailingSlash: false,
+  });
+  res.socket.server.io = io;
 
-const ioHandler = (req: NextApiRequest, res: NextApiResponseServerIO) => {
-	if (res.socket.server.io) {
-		console.log('already running');
-		res.end();
-		return;
-	}
-	const path = '/api/socket/io';
-	const httpServer: NetServer = res.socket.server as any;
-	const io = new ServerIo(httpServer, {
-		path,
-		addTrailingSlash: false,
-	});
-	// @ts-ignore
-	res.socket.server.io = io;
-	io.on('connect', (socket) => {
-		const clientID = socket.id;
-		console.log('setting up conneciton');
-		socket.on('send-message', (obj) => {
-			io.emit('recieve-message', obj);
-		});
+  const onConnection = (socket: any) => {
+    console.log("New connection", socket.id);
+    onSocketConnection(io, socket);
+  };
 
-		socket.on('disconnect', () => {
-			console.log('Disconnecting Client');
-		});
-	});
-	corsMiddleware(req, res, () => {
-		// @ts-ignore
-		res.socket.server.io = io;
-		res.end();
-	});
-};
+  io.on("connection", onConnection);
 
-export default ioHandler;
+  console.log("Socket server started successfully!");
+  res.end();
+}
