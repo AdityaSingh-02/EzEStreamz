@@ -5,6 +5,7 @@ EzStreamz is Next.js app, which can be used to Stream and Video call, with end-t
 
 ## Getting Started
 
+<!-- will be adding readme here -->
 
 
 First, run the development server:
