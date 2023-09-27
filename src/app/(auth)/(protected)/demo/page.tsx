@@ -27,13 +27,11 @@ const Demo = () => {
       name: "aditya",
       rid: "123",
     };
-    axios
-      .post("/api/v1/create", data)
-      .then((res: any) => {
-        if (res.status === 200) {
-          axios.post('api/v1/rtcConnection',data)
-        }
-      });
+    axios.post("/api/v1/create", data).then((res: any) => {
+      if (res.status === 200) {
+        axios.post("api/v1/rtcConnection", data);
+      }
+    });
   };
 
   return (

@@ -6,11 +6,11 @@ import useAuth from "@/Context/Authentication/useAuth";
 import { useRouter } from "next/navigation";
 
 interface Props {
-  setError: Dispatch<SetStateAction<string>>
+  setError: Dispatch<SetStateAction<string>>;
 }
 
-const SignupForm:FC<Props> = ({setError}:Props) => {
-  const {setAuthStatus} = useAuth();
+const SignupForm: FC<Props> = ({ setError }: Props) => {
+  const { setAuthStatus } = useAuth();
   const router = useRouter();
   const [userInput, setInput] = useState({
     email: "",
@@ -31,21 +31,23 @@ const SignupForm:FC<Props> = ({setError}:Props) => {
     }
   };
 
-  const signUpAction = async() => {
-    if(userInput.password.length < 8 && userInput.email.length < 7){
-      setError("Email and Password too short, Provide Authentic Details")
-      return
+  const signUpAction = async () => {
+    if (userInput.password.length < 8 && userInput.email.length < 7) {
+      setError("Email and Password too short, Provide Authentic Details");
+      return;
     }
-    if(userInput.email.length < 7){
-      setError("Provide Authentic Email")
-      return
+    if (userInput.email.length < 7) {
+      setError("Provide Authentic Email");
+      return;
     }
-    if(userInput.password.length < 8){
-      setError("Password too short, please enter a valid password with atleast 8 characters")
-      return
+    if (userInput.password.length < 8) {
+      setError(
+        "Password too short, please enter a valid password with atleast 8 characters",
+      );
+      return;
     }
     const res = await appwriteService.createUser(userInput);
-    if(res){
+    if (res) {
       setAuthStatus(true);
       router.replace("/");
     }
@@ -80,7 +82,8 @@ const SignupForm:FC<Props> = ({setError}:Props) => {
         />
         <button
           className="px-4 py-2 rounded-lg bg-red-500 font-bold"
-          onClick={signUpAction}>
+          onClick={signUpAction}
+        >
           SignUp{" "}
         </button>
       </div>

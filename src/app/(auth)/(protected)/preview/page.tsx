@@ -143,20 +143,23 @@ const Preview = () => {
             Room Id - {roomId}
             <button
               className="pl-2 transition-all duration-200"
-              onClick={copyRoomId}>
+              onClick={copyRoomId}
+            >
               {!copy ? <BiCopy /> : <MdDone color="green" />}
             </button>
           </h1>
           <button
             onClick={handleCreateRoom}
-            className="px-4 py-2 rounded-md bg-gray-500 mx-2 text-xl">
+            className="px-4 py-2 rounded-md bg-gray-500 mx-2 text-xl"
+          >
             Join
           </button>
           <button
             onClick={toggleCamera}
             className={`px-4 py-2 flex justify-center rounded-md ${
               videoStatus ? "bg-red-500" : "bg-green-500"
-            } mx-2 text-xl`}>
+            } mx-2 text-xl`}
+          >
             {videoStatus ? <BsCameraVideoOff /> : <BsCameraVideo />}
           </button>
           <p className="text-black text-sm mx-auto">

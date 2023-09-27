@@ -1,7 +1,5 @@
-import type {IWebSocketInit} from '@/types/socketData'
+import type { IWebSocketInit } from "@/types/socketData";
 
 export class clientSocket {
-    async createClientRTC(data: IWebSocketInit) {
-        
-    }
+  async createClientRTC(data: IWebSocketInit) {}
 }

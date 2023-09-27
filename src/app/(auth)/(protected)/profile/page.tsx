@@ -52,12 +52,14 @@ const ProfilePage = () => {
         <div className="space-y-3">
           <button
             onClick={handleCreateRoom}
-            className="md:px-4 px-7 md:py-2 py-4 rounded-md bg-gray-500 mx-2">
+            className="md:px-4 px-7 md:py-2 py-4 rounded-md bg-gray-500 mx-2"
+          >
             Create Room
           </button>
           <button
             onClick={handleJoinRoom}
-            className="md:px-4 px-7 md:py-2 py-4 rounded-md bg-gray-500 mx-2">
+            className="md:px-4 px-7 md:py-2 py-4 rounded-md bg-gray-500 mx-2"
+          >
             Join Room
           </button>
         </div>

@@ -6,11 +6,11 @@ import useAuth from "@/Context/Authentication/useAuth";
 import { useRouter } from "next/navigation";
 import { AuthRequiredError } from "@/lib/AuthRequired";
 
-interface Props{
-  setError: Dispatch<SetStateAction<string>>
+interface Props {
+  setError: Dispatch<SetStateAction<string>>;
 }
 
-const LoginForm:FC<Props> = ({setError}:Props) => {
+const LoginForm: FC<Props> = ({ setError }: Props) => {
   const router = useRouter();
   const { setAuthStatus } = useAuth();
   const [userInput, setInput] = useState({
@@ -28,8 +28,8 @@ const LoginForm:FC<Props> = ({setError}:Props) => {
   };
 
   const loginAction = async () => {
-    if(userInput.password.length < 8 || userInput.email.length < 8){
-      setError("Please Enter valid Credentials")
+    if (userInput.password.length < 8 || userInput.email.length < 8) {
+      setError("Please Enter valid Credentials");
       return;
     }
 
@@ -39,7 +39,7 @@ const LoginForm:FC<Props> = ({setError}:Props) => {
         setAuthStatus(true);
       }
     } catch (error) {
-      setError("Invalid Creds")
+      setError("Invalid Creds");
       throw new AuthRequiredError();
     }
   };
@@ -65,7 +65,8 @@ const LoginForm:FC<Props> = ({setError}:Props) => {
         />
         <button
           className="px-4 py-2 rounded-lg bg-red-500 font-bold"
-          onClick={loginAction}>
+          onClick={loginAction}
+        >
           Login{" "}
         </button>
       </div>
