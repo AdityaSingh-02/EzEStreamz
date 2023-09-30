@@ -1,7 +1,8 @@
 import { Server } from "socket.io";
 import onSocketConnection from "@/Helpers/onSocketConnection";
+import type {NextApiResponseServerIO} from "@/types/SocketIO"
 
-export default function handler(req:any, res: any) {
+export default function handler(req:any, res: NextApiResponseServerIO) {
   if (res.socket.server.io) {
     console.log("Server already started!");
     res.end();
