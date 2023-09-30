@@ -29,3 +29,9 @@ This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-opti
 ## Repository Structure
 
 - When a user logs in successfully, they get the option to create a room as well as join a room by entering 12 digits unique RID, and by both ways, the user is redirected to /rooms/:rid, in the next js the folder would be named as room/[rid]
+
+
+<img width="752" alt="Screenshot 2023-09-30 at 10 36 10 PM" src="https://github.com/AdityaSingh-02/EzEStreamz/assets/94185167/065e3a04-a13a-4f25-99b2-5c3b27f70e9e">
+
+
+  
