@@ -12,9 +12,9 @@ yarn dev
 pnpm dev
 ```
 
-- Copy .sample.env to .env file.
+- Create a new .env file and copy content of .sample.env > .env file.
 - Create a new project in [Appwrite](https://cloud.appwrite.io/) , get the API key and paste in .env file
-- Install all the dependencies and get started
+- Install all the dependencies and get started with npm run dev, create account and check whether appwrite service is working or not.
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
