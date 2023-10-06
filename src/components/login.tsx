@@ -46,25 +46,25 @@ const LoginForm: FC<Props> = ({ setError }: Props) => {
 
   return (
     <>
-      <div className="flex flex-col space-y-5 text-black">
+      <div className="flex flex-col space-y-10 items-center text-black w-[100%] text-xl">
         <input
           type="text"
           onChange={handleChange}
-          className="px-4 py-2 rounded-lg "
-          placeholder="Email"
+          className="px-4 py-2 rounded-xl w-[80%] focus:border-black-400 placeholder:text-black"
+          placeholder="User Name"
           value={userInput.email}
           name="email"
         />
         <input
           type="password"
           onChange={handleChange}
-          className="px-4 py-2 rounded-lg "
+          className="px-4 py-2 rounded-xl w-[80%] focus:border-black-400 placeholder:text-black"
           placeholder="Password"
           value={userInput.password}
           name="password"
         />
         <button
-          className="px-4 py-2 rounded-lg bg-red-500 font-bold"
+          className="px-12 py-2 rounded-xl bg-white max-w-full font-medium text-3xl shadow-xl"
           onClick={loginAction}
         >
           Login{" "}
