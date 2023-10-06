@@ -1,117 +1,105 @@
-"use client";
-import { usePeer } from "@/Context/usePeer";
-import { useVideo, useUserContext } from "@/Context";
-import React, { useCallback, useEffect, useState } from "react";
-import type { IWebSocketInit } from "@/types/socketData";
-// import Router from "next/navigation";
-import { usePathname } from "next/navigation";
-import axios from "axios";
-import ReactPlayer from "react-player";
-import { BsCameraVideo, BsCameraVideoOff } from "react-icons/bs";
+'use client';
+import { usePeer } from '@/Context/usePeer';
+import { useVideo, useUserContext } from '@/Context';
+import React, { useCallback, useEffect, useState } from 'react';
+import type { IWebSocketInit } from '@/types/socketData';
+import { usePathname } from 'next/navigation';
+import axios from 'axios';
+import ReactPlayer from 'react-player';
+import { BsCameraVideo, BsCameraVideoOff } from 'react-icons/bs';
 
 const Room = () => {
-  const [user2, setUser2] = useState("");
-  const [myVideo, setMyVideo] = useState<MediaStream>();
-  const { videoStatus, setVideoStatus } = useVideo();
-  const { createOffer } = usePeer();
-  const { user } = useUserContext();
+	const [user2, setUser2] = useState('');
+	const [myVideo, setMyVideo] = useState<MediaStream>();
+	const { videoStatus, setVideoStatus } = useVideo();
+	const { createOffer } = usePeer();
+	const { user } = useUserContext();
 
-  const pathName = usePathname();
-  const rid = pathName.split("/")[2];
+	const pathName: string = usePathname()!;
+	const rid = pathName.split('/')[2];
 
-  useEffect(() => {
-    user.user2 ? setUser2(user.user2) : null;
-    // if (user2 !== "") {
-    //   handleJoins();
-    // }
+	useEffect(() => {
+		user.user2 ? setUser2(user.user2) : null;
 
-    if (videoStatus) {
-      navigator.mediaDevices
-        .getUserMedia({ video: true, audio: true })
-        .then((res) => setMyVideo(res));
-    } else {
-      closeVideoStream();
-    }
-  }, [videoStatus, user, user2]);
+		if (videoStatus) {
+			navigator.mediaDevices.getUserMedia({ video: true, audio: true }).then((res) => setMyVideo(res));
+		} else {
+			closeVideoStream();
+		}
+	}, [videoStatus, user, user2]);
 
-  // Handles Video Closing
-  const closeVideoStream = () => {
-    if (myVideo) {
-      myVideo.getTracks().forEach((track) => track.stop());
-      setMyVideo(undefined);
-    }
-  };
+	// Handles Video Closing
+	const closeVideoStream = () => {
+		if (myVideo) {
+			myVideo.getTracks().forEach((track) => track.stop());
+			setMyVideo(undefined);
+		}
+	};
 
-  const toggleMyVideo = () => {
-    setVideoStatus(!videoStatus);
-  };
+	const toggleMyVideo = () => {
+		setVideoStatus(!videoStatus);
+	};
 
-  const handleJoins = useCallback(async () => {
-    const offer = await createOffer();
-    const data: IWebSocketInit = {
-      call: "call-user",
-      email: user.emailUser1!,
-      rid,
-      offer,
-    };
-    // Creating Room and sending data
-    axios
-      .post("/api/v1/create", data)
-      .then(async (res: any) => {
-        if (res.status == 200) {
-          createClientConnection(data);
-        }
-      })
-      .catch((err: any) => {
-        console.log(err);
-      });
-  }, [createOffer]);
+	const handleJoins = useCallback(async () => {
+		const offer = await createOffer();
+		const data: IWebSocketInit = {
+			call: 'call-user',
+			email: user.emailUser1!,
+			rid,
+			offer,
+		};
+		// Creating Room and sending data
+		axios
+			.post('/api/v1/create', data)
+			.then(async (res: any) => {
+				if (res.status == 200) {
+					createClientConnection(data);
+				}
+			})
+			.catch((err: any) => {
+				console.log(err);
+			});
+	}, [createOffer]);
 
-  const createClientConnection = async (data: IWebSocketInit) => {
-    const ws = new WebSocket("ws://localhost:3001");
-    const { call, email, name, rid }: IWebSocketInit = data;
-    ws.onopen = () => {
-      ws.send(call);
-    };
+	const createClientConnection = async (data: IWebSocketInit) => {
+		const ws = new WebSocket('ws://localhost:3001');
+		const { call, email, name, rid }: IWebSocketInit = data;
+		ws.onopen = () => {
+			ws.send(call);
+		};
 
-    ws.onmessage = async (message) => {};
+		ws.onmessage = async (message) => {};
 
-    ws.onclose = () => {
-      console.log("WebSocket connection closed.");
-    };
+		ws.onclose = () => {
+			console.log('WebSocket connection closed.');
+		};
 
-    ws.onerror = (error) => {
-      console.error("WebSocket error:", error);
-    };
-  };
+		ws.onerror = (error) => {
+			console.error('WebSocket error:', error);
+		};
+	};
 
-  return (
-    <>
-      <div className="flex w-[100%] items-center h-screen ">
-        <div className="w-[70%] flex justify-center items-center border-2 border-gray-800 h-[80%] rounded-2xl m-10">
-          <ReactPlayer url={myVideo} playing muted height={500} width={800} />
-        </div>
-        <div className="w-[30%] flex flex-col justify-between py-10 border-2 px-7 border-gray-800 h-[90%] m-10 rounded-2xl">
-          <div className="border-2 border-red-400 h-[30%] rounded-2xl flex justify-center items-center">
-            MyVideo
-          </div>
-          <div className="border-2 border-red-400 h-[50%] rounded-2xl flex justify-center items-center">
-            Details : WIP BETA
-          </div>
-          <div className=" flex justify-center ">
-            <button
-              onClick={toggleMyVideo}
-              className={`px-4 py-2 flex justify-center rounded-md ${
-                videoStatus ? "bg-red-500" : "bg-green-500"
-              } mx-2 text-xl`}
-            >
-              {videoStatus ? <BsCameraVideoOff /> : <BsCameraVideo />}
-            </button>
-          </div>
-        </div>
-      </div>
-    </>
-  );
+	return (
+		<>
+			<div className='flex w-[100%] items-center h-screen '>
+				<div className='w-[70%] flex justify-center items-center border-2 border-gray-800 h-[80%] rounded-2xl m-10'>
+					<ReactPlayer url={myVideo} playing muted height={500} width={800} />
+				</div>
+				<div className='w-[30%] flex flex-col justify-between py-10 border-2 px-7 border-gray-800 h-[90%] m-10 rounded-2xl'>
+					<div className='border-2 border-red-400 h-[30%] rounded-2xl flex justify-center items-center'>MyVideo</div>
+					<div className='border-2 border-red-400 h-[50%] rounded-2xl flex justify-center items-center'>Details : WIP BETA</div>
+					<div className=' flex justify-center '>
+						<button
+							onClick={toggleMyVideo}
+							className={`px-4 py-2 flex justify-center rounded-md ${videoStatus ? 'bg-red-500' : 'bg-green-500'} mx-2 text-xl`}
+						>
+							{videoStatus ? <BsCameraVideoOff /> : <BsCameraVideo />}
+						</button>
+					</div>
+				</div>
+			</div>
+		</>
+	);
 };
 
 export default Room;
