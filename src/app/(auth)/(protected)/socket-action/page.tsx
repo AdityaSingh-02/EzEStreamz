@@ -12,7 +12,7 @@ export default function Socket() {
     // We call this just to make sure we turn on the websocket server
     await fetch("/api/socket/io");
 
-    socket = io(undefined, {
+    socket = io({
       path: "/api/socket_io/",
     });
 

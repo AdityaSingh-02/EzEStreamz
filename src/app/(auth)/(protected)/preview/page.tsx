@@ -3,6 +3,9 @@ import React, { use, useEffect, useState } from 'react';
 import dynamic from 'next/dynamic';
 const ReactPlayer = dynamic(() => import('react-player'), { ssr: false });
 import { v4 } from 'uuid';
+import { useRouter } from 'next/navigation';
+import {io} from 'socket.io-client'
+import axios from 'axios';
 
 // Contexts
 import { useVideo, useUserContext, useSocketConnection } from '@/Context';
@@ -12,27 +15,26 @@ import { BsCameraVideo, BsCameraVideoOff } from 'react-icons/bs';
 import { BiCopy } from 'react-icons/bi';
 import { MdDone } from 'react-icons/md';
 
-import { useRouter } from 'next/navigation';
-import type { IWebSocketInit } from '@/server/webSocket';
+// import type { IWebSocketInit } from '@/server/webSocket';
 import appwriteService from '@/appwrite-service/config';
-
-import axios from 'axios';
 
 const Preview = () => {
 	const [video, setVideo] = useState<MediaStream>(); // Video stream
 	const [roomId, setRoomId] = useState(''); // Room ID
 	const { videoStatus, setVideoStatus } = useVideo(); // Video on or off
 	const [copy, setCopyStatus] = useState(false); // Copy rid status
-	const [ws, setWs] = useState<WebSocket>(new WebSocket('ws://localhost:3001')); // Websocket connection
+	// const [ws, setWs] = useState<WebSocket>(new WebSocket('ws://localhost:3001')); // Websocket connection
 	const [userInfo, setUserInfo] = useState({
 		name: '',
 		email: '',
 	}); // User info
+  const[ioConnected, setIoConnection] = useState(false); //check for Io API is fetched or not
 
 	const router = useRouter();
-	// Using Contexts
+
+  // Using Contexts
 	const { addUser } = useUserContext();
-	const { connectionStatus, setConnectionStatus, setURL } = useSocketConnection();
+	// const { connectionStatus, setConnectionStatus, setURL } = useSocketConnection();
 
 	// gets uuid
 	let rid = v4().substring(0, 12);
@@ -88,6 +90,20 @@ const Preview = () => {
 		addUser({ emailUser1: userInfo.email, user1: userInfo.name, rid: roomId });
 
 		// Todo - Add Api call
+
+    if(!ioConnected){
+      await fetch("/api/socket/io");
+      setIoConnection(!ioConnected);
+    }
+
+    const socket = io({
+      path: "/api/socket_io"
+    });
+
+    socket.on("connect", () => {
+      console.log("Connected", socket.id);
+    });
+
 	};
 
 	return (
