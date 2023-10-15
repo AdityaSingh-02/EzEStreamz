@@ -92,7 +92,7 @@ const Preview = () => {
 
 	return (
 		<>
-			<div className='flex flex-col md:flex-row justify-start md:justify-around items-center h-screen bg-gradient-to-tr from-blue-500 to-emerald-500'>
+			<div className='flex flex-col md:flex-row justify-start md:justify-around items-center h-screen bg-gradient-to-tr bg-gray-950'>
 				<div className='flex max-sm:w-[350px] px-4 max-md:w-[600px] md:px-0'>
 					<ReactPlayer url={video} playing muted height={500} width={800} />
 				</div>
@@ -112,7 +112,7 @@ const Preview = () => {
 					>
 						{videoStatus ? <BsCameraVideoOff /> : <BsCameraVideo />}
 					</button>
-					<p className='text-black text-sm mx-auto'>**Mic is Turned off by default</p>
+					<p className='text-white text-sm mx-auto'>**Mic is Turned off by default</p>
 				</div>
 			</div>
 		</>

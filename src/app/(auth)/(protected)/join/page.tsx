@@ -24,8 +24,9 @@ const Join = () => {
   const router = useRouter();
   const { createOffer } = usePeer();
 
+  // todo- Uncomment getUserData()
   useEffect(() => {
-    getUserData();
+    // getUserData();
     if (videoStatus) {
       navigator.mediaDevices
         .getUserMedia({ video: true, audio: false })
@@ -65,7 +66,7 @@ const Join = () => {
 
   return (
     <>
-      <div className="flex flex-col md:flex-row justify-start md:justify-around items-center h-screen bg-gradient-to-tr from-blue-500 to-emerald-500">
+      <div className="flex flex-col md:flex-row justify-start md:justify-around items-center h-screen bg-gradient-to-tr bg-gray-950">
         <div className="flex max-sm:w-[350px] px-4 max-md:w-[600px] md:px-0">
           <ReactPlayer url={video} playing muted height={500} width={800} />
         </div>
@@ -74,7 +75,7 @@ const Join = () => {
             type="text"
             placeholder="Enter Room Id"
             onChange={(e) => setRid(e.target.value)}
-            className="px-4 py-2 rounded-lg text-black"
+            className="px-10 py-2 rounded-lg text-black"
           />
           <button
             aria-label="join"
