@@ -42,23 +42,8 @@ const Room = () => {
 
 	const handleJoins = useCallback(async () => {
 		const offer = await createOffer();
-		const data: IWebSocketInit = {
-			call: 'call-user',
-			email: user.emailUser1!,
-			rid,
-			offer,
-		};
 		// Creating Room and sending data
-		axios
-			.post('/api/v1/create', data)
-			.then(async (res: any) => {
-				if (res.status == 200) {
-					createClientConnection(data);
-				}
-			})
-			.catch((err: any) => {
-				console.log(err);
-			});
+		// Todo add socket methods
 	}, [createOffer]);
 
 	const createClientConnection = async (data: IWebSocketInit) => {
