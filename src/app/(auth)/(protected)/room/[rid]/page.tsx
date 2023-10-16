@@ -4,7 +4,6 @@ import { useVideo, useUserContext } from '@/Context';
 import React, { useCallback, useEffect, useState } from 'react';
 import type { IWebSocketInit } from '@/types/socketData';
 import { usePathname } from 'next/navigation';
-import axios from 'axios';
 import ReactPlayer from 'react-player';
 import { BsCameraVideo, BsCameraVideoOff } from 'react-icons/bs';
 
@@ -46,22 +45,23 @@ const Room = () => {
 		// Todo add socket methods
 	}, [createOffer]);
 
+	// Todo - add client connection/ rm it
 	const createClientConnection = async (data: IWebSocketInit) => {
-		const ws = new WebSocket('ws://localhost:3001');
-		const { call, email, name, rid }: IWebSocketInit = data;
-		ws.onopen = () => {
-			ws.send(call);
-		};
+		// const ws = new WebSocket('ws://localhost:3001');
+		// const { call, email, name, rid }: IWebSocketInit = data;
+		// ws.onopen = () => {
+		// 	ws.send(call);
+		// };
 
-		ws.onmessage = async (message) => {};
+		// ws.onmessage = async (message) => {};
 
-		ws.onclose = () => {
-			console.log('WebSocket connection closed.');
-		};
+		// ws.onclose = () => {
+		// 	console.log('WebSocket connection closed.');
+		// };
 
-		ws.onerror = (error) => {
-			console.error('WebSocket error:', error);
-		};
+		// ws.onerror = (error) => {
+		// 	console.error('WebSocket error:', error);
+		// };
 	};
 
 	return (
