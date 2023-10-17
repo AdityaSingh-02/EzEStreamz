@@ -16,12 +16,16 @@ export default function handler(req:any, res: NextApiResponseServerIO) {
   });
   res.socket.server.io = io;
 
-  const onConnection = (socket: any) => {
-    console.log("New connection", socket.id);
-    onSocketConnection(io, socket);
-  };
+  // const onConnection = (socket: any) => {
+  //   console.log("New connection", socket.id);
+  //   onSocketConnection(io, socket);
+  // };
 
-  io.on("connection", onConnection);
+  io.on("connection", (skt)=>{
+    skt.on("join-room",(data)=>{
+      const {rid, emailId} = data;
+    })
+  });
 
   console.log("Socket server started successfully!");
   res.end();
