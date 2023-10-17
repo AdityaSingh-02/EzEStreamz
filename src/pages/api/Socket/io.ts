@@ -1,5 +1,4 @@
 import { Server } from "socket.io";
-import onSocketConnection from "@/Helpers/onSocketConnection";
 import type {NextApiResponseServerIO} from "@/types/SocketIO"
 
 export default function handler(req:any, res: NextApiResponseServerIO) {
@@ -21,9 +20,16 @@ export default function handler(req:any, res: NextApiResponseServerIO) {
   //   onSocketConnection(io, socket);
   // };
 
+  const emailToSocketMAP = new Map();
+
+
   io.on("connection", (skt)=>{
     skt.on("join-room",(data)=>{
       const {rid, emailId} = data;
+      console.log("user", emailId, "joined",rid);
+      emailToSocketMAP.set(emailId, skt.id);
+      skt.join(rid);
+      skt.broadcast.to(rid).emit('user-joined',{emailId});
     })
   });
 
