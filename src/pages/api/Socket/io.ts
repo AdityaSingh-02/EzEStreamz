@@ -20,14 +20,15 @@ export default function handler(req:any, res: NextApiResponseServerIO) {
   //   onSocketConnection(io, socket);
   // };
 
-  const emailToSocketMAP = new Map();
-
+  const emailToSocketIdMAP = new Map();
+  const socketIdToEmailMAP = new Map();
 
   io.on("connection", (skt)=>{
     skt.on("join-room",(data)=>{
       const {rid, emailId} = data;
       console.log("user", emailId, "joined",rid);
-      emailToSocketMAP.set(emailId, skt.id);
+      emailToSocketIdMAP.set(emailId, skt.id);
+      socketIdToEmailMAP.set(skt.id, emailId);
       skt.join(rid);
       skt.broadcast.to(rid).emit('user-joined',{emailId});
     })

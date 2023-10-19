@@ -13,7 +13,7 @@ const page = () => {
 	};
 
 	useEffect(() => {
-		// socketInit();
+		socketInit();
 	}, []);
 	return (
 		<>
