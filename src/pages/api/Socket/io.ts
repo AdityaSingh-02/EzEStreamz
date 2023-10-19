@@ -30,6 +30,7 @@ export default function handler(req:any, res: NextApiResponseServerIO) {
       emailToSocketIdMAP.set(emailId, skt.id);
       socketIdToEmailMAP.set(skt.id, emailId);
       skt.join(rid);
+      skt.emit("joined-room", { rid })
       skt.broadcast.to(rid).emit('user-joined',{emailId});
     })
   });
