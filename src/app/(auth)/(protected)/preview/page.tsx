@@ -4,11 +4,11 @@ import dynamic from 'next/dynamic';
 const ReactPlayer = dynamic(() => import('react-player'), { ssr: false });
 import { v4 } from 'uuid';
 import { useRouter } from 'next/navigation';
-import {io} from 'socket.io-client'
+import { io } from 'socket.io-client';
 import axios from 'axios';
 
 // Contexts
-import { useVideo, useUserContext, useSocketConnection } from '@/Context';
+import { useVideo, useUserContext, useSocketConnection, useSocket } from '@/Context';
 
 // Icons
 import { BsCameraVideo, BsCameraVideoOff } from 'react-icons/bs';
@@ -28,15 +28,16 @@ const Preview = () => {
 		name: '',
 		email: '',
 	}); // User info
-  const[ioConnected, setIoConnection] = useState(false); //check for Io API is fetched or not
+	const [ioConnected, setIoConnection] = useState(false); //check for Io API is fetched or not
 
 	const router = useRouter();
 
-  // Using Contexts
+	// Using Contexts
 	const { addUser } = useUserContext();
 	// const { connectionStatus, setConnectionStatus, setURL } = useSocketConnection();
 
 	// gets uuid
+	// remember Do not use rid for routing purposes
 	let rid = v4().substring(0, 12);
 	if (roomId === '') {
 		setRoomId(rid);
@@ -84,6 +85,7 @@ const Preview = () => {
 		});
 	};
 
+	const { socket } = useSocket();
 	// Manages user Join Data and Websocket connection
 	const handleCreateRoom = async () => {
 		// Hook used to store user data
@@ -91,19 +93,18 @@ const Preview = () => {
 
 		// Todo - Add Api call
 
-    if(!ioConnected){
-      await fetch("/api/socket/io");
-      setIoConnection(!ioConnected);
-    }
+		socket.on('join-room', () => {
+			console.log('Rooom joined');
+		});
 
-    const socket = io({
-      path: "/api/socket_io"
-    });
+		// if (!ioConnected) {
+		// 	await fetch('/api/socket/io');
+		// 	setIoConnection(!ioConnected);
+		// }
 
-    socket.on("connect", () => {
-      console.log("Connected", socket.id);
-    });
-
+		// const socket = io({
+		// 	path: '/api/socket_io',
+		// });
 	};
 
 	return (
