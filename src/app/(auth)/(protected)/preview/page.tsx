@@ -4,7 +4,7 @@ import dynamic from 'next/dynamic';
 const ReactPlayer = dynamic(() => import('react-player'), { ssr: false });
 import { v4 } from 'uuid';
 import { useRouter } from 'next/navigation';
-import { io } from 'socket.io-client';
+import { io, Socket } from 'socket.io-client';
 import axios from 'axios';
 
 // Contexts
@@ -19,22 +19,21 @@ import { MdDone } from 'react-icons/md';
 import appwriteService from '@/appwrite-service/config';
 
 const Preview = () => {
+	const router = useRouter();
 	const [video, setVideo] = useState<MediaStream>(); // Video stream
 	const [roomId, setRoomId] = useState(''); // Room ID
 	const { videoStatus, setVideoStatus } = useVideo(); // Video on or off
 	const [copy, setCopyStatus] = useState(false); // Copy rid status
-	// const [ws, setWs] = useState<WebSocket>(new WebSocket('ws://localhost:3001')); // Websocket connection
 	const [userInfo, setUserInfo] = useState({
 		name: '',
 		email: '',
 	}); // User info
-	const [ioConnected, setIoConnection] = useState(false); //check for Io API is fetched or not
 
-	const router = useRouter();
+	let socket:Socket;
+	
 
 	// Using Contexts
 	const { addUser } = useUserContext();
-	// const { connectionStatus, setConnectionStatus, setURL } = useSocketConnection();
 
 	// gets uuid
 	// remember Do not use rid for routing purposes
@@ -85,26 +84,20 @@ const Preview = () => {
 		});
 	};
 
-	const { socket } = useSocket();
+
+
+	// const { socket } = useSocket();
 	// Manages user Join Data and Websocket connection
 	const handleCreateRoom = async () => {
 		// Hook used to store user data
 		addUser({ emailUser1: userInfo.email, user1: userInfo.name, rid: roomId });
 
 		// Todo - Add Api call
-
-		socket.on('join-room', () => {
-			console.log('Rooom joined');
+		await fetch('api/socket/io');
+		socket = io({
+			path: '/api/socket_io/',
 		});
-
-		// if (!ioConnected) {
-		// 	await fetch('/api/socket/io');
-		// 	setIoConnection(!ioConnected);
-		// }
-
-		// const socket = io({
-		// 	path: '/api/socket_io',
-		// });
+		socket.emit('join-room', { rid: '1', emailId: 'aditya@2002' });
 	};
 
 	return (

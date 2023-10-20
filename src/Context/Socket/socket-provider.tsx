@@ -11,14 +11,17 @@ export const useSocket = () => {
 };
 
 export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
-	const socket = useMemo(
-		() =>
-			io({
-				path:"/api/socket_io",
-				addTrailingSlash:false,
-			}),
-		[],
-	);
+	
+	// const socket = useMemo(
+	// 	() =>
+	// 		io({
+	// 			path:"/api/socket_io",
+	// 			addTrailingSlash:false,
+	// 		}),
+	// 	[],
+	// );
 
-	return <SocketContext.Provider value={{ socket }}>{children}</SocketContext.Provider>;
+	
+
+	return <SocketContext.Provider value={{}}>{children}</SocketContext.Provider>;
 };
