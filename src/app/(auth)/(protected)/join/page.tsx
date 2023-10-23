@@ -4,9 +4,7 @@ import dynamic from 'next/dynamic';
 const ReactPlayer = dynamic(() => import('react-player'), { ssr: false });
 import { useVideo } from '@/Context';
 import { BsCameraVideo, BsCameraVideoOff } from 'react-icons/bs';
-import type { IWebSocketInit } from '@/server/webSocket';
 import appwriteService, { AppwriteService } from '@/appwrite-service/config';
-import axios from 'axios';
 import { useUserContext, useSocket } from '@/Context';
 import { usePeer } from '@/Context/usePeer';
 import { useRouter } from 'next/navigation';
@@ -26,9 +24,8 @@ const Join = () => {
 
 	const { socket } = useSocket();
 
-	// todo- Uncomment getUserData()
 	useEffect(() => {
-		// getUserData();
+		getUserData();
 		if (videoStatus) {
 			navigator.mediaDevices.getUserMedia({ video: true, audio: false }).then((res) => {
 				setVideo(res);
@@ -36,7 +33,7 @@ const Join = () => {
 		} else {
 			closeVideo();
 		}
-
+		// Socket Management
 		socket.on('joined-room', ({ rid }: any) => {
 			router.push(`/room/${rid}`);
 		});
@@ -62,7 +59,7 @@ const Join = () => {
 	const joinRoom = async () => {
 		if (rid.length == 12) {
 			addUser({ user2: userInfo.email, emailUser2: userInfo.email, rid });
-			socket.emit('join-room', { rid, emailId: 'Hello' });
+			socket.emit('join-room', { rid, emailId: userInfo.email });
 		} else {
 			return new Error('Room Id is not valid');
 		}
