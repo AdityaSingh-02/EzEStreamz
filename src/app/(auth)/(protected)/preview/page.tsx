@@ -5,10 +5,9 @@ const ReactPlayer = dynamic(() => import('react-player'), { ssr: false });
 import { v4 } from 'uuid';
 import { useRouter } from 'next/navigation';
 import { io, Socket } from 'socket.io-client';
-import axios from 'axios';
 
 // Contexts
-import { useVideo, useUserContext, useSocketConnection, useSocket } from '@/Context';
+import { useVideo, useUserContext } from '@/Context';
 
 // Icons
 import { BsCameraVideo, BsCameraVideoOff } from 'react-icons/bs';
@@ -31,7 +30,6 @@ const Preview = () => {
 
 	let socket:Socket;
 	
-
 	// Using Contexts
 	const { addUser } = useUserContext();
 
@@ -84,9 +82,6 @@ const Preview = () => {
 		});
 	};
 
-
-
-	// const { socket } = useSocket();
 	// Manages user Join Data and Websocket connection
 	const handleCreateRoom = async () => {
 		// Hook used to store user data
