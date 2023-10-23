@@ -1,11 +1,12 @@
 'use client';
 import { usePeer } from '@/Context/usePeer';
-import { useVideo, useUserContext } from '@/Context';
+import { useVideo, useUserContext, useSocket } from '@/Context';
 import React, { useCallback, useEffect, useState } from 'react';
 import type { IWebSocketInit } from '@/types/socketData';
 import { usePathname } from 'next/navigation';
 import ReactPlayer from 'react-player';
 import { BsCameraVideo, BsCameraVideoOff } from 'react-icons/bs';
+import { io } from 'socket.io-client';
 
 const Room = () => {
 	const [user2, setUser2] = useState('');
@@ -17,15 +18,20 @@ const Room = () => {
 	const pathName: string = usePathname()!;
 	const rid = pathName.split('/')[2];
 
+	const { socket } = useSocket();
+
 	useEffect(() => {
-		user.user2 ? setUser2(user.user2) : null;
+		// user.user2 ? setUser2(user.user2) : null;
+		socket.on('user-joined', (data: any) => {
+			console.log(data);
+		});
 
 		if (videoStatus) {
 			navigator.mediaDevices.getUserMedia({ video: true, audio: true }).then((res) => setMyVideo(res));
 		} else {
 			closeVideoStream();
 		}
-	}, [videoStatus, user, user2]);
+	}, [videoStatus, user, user2, socket]);
 
 	// Handles Video Closing
 	const closeVideoStream = () => {
@@ -39,30 +45,11 @@ const Room = () => {
 		setVideoStatus(!videoStatus);
 	};
 
-	const handleJoins = useCallback(async () => {
-		const offer = await createOffer();
-		// Creating Room and sending data
-		// Todo add socket methods
-	}, [createOffer]);
-
-	// Todo - add client connection/ rm it
-	const createClientConnection = async (data: IWebSocketInit) => {
-		// const ws = new WebSocket('ws://localhost:3001');
-		// const { call, email, name, rid }: IWebSocketInit = data;
-		// ws.onopen = () => {
-		// 	ws.send(call);
-		// };
-
-		// ws.onmessage = async (message) => {};
-
-		// ws.onclose = () => {
-		// 	console.log('WebSocket connection closed.');
-		// };
-
-		// ws.onerror = (error) => {
-		// 	console.error('WebSocket error:', error);
-		// };
-	};
+	// const handleJoins = useCallback(async () => {
+	// 	const offer = await createOffer();
+	// 	// Creating Room and sending data
+	// 	// Todo add socket methods
+	// }, [createOffer]);
 
 	return (
 		<>

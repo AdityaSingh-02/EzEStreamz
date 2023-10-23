@@ -7,7 +7,7 @@ import { useRouter } from 'next/navigation';
 import { io, Socket } from 'socket.io-client';
 
 // Contexts
-import { useVideo, useUserContext } from '@/Context';
+import { useVideo, useUserContext, useSocket } from '@/Context';
 
 // Icons
 import { BsCameraVideo, BsCameraVideoOff } from 'react-icons/bs';
@@ -28,8 +28,8 @@ const Preview = () => {
 		email: '',
 	}); // User info
 
-	let socket:Socket;
-	
+	const { socket } = useSocket();
+
 	// Using Contexts
 	const { addUser } = useUserContext();
 
@@ -50,7 +50,10 @@ const Preview = () => {
 			closeVideo();
 		}
 		getUserData();
-	}, [videoStatus]);
+		socket.on('joined-room', ({ rid }: any) => {
+			router.push(`/room/${rid}`);
+		});
+	}, [videoStatus, socket]);
 
 	// Closes all the tracks for camera
 	const closeVideo = () => {
@@ -86,13 +89,18 @@ const Preview = () => {
 	const handleCreateRoom = async () => {
 		// Hook used to store user data
 		addUser({ emailUser1: userInfo.email, user1: userInfo.name, rid: roomId });
-
+		socket.emit('join-room', { rid: roomId, emailId: userInfo.email });
 		// Todo - Add Api call
-		await fetch('api/socket/io');
-		socket = io({
-			path: '/api/socket_io/',
-		});
-		socket.emit('join-room', { rid: '1', emailId: 'aditya@2002' });
+		// fetch('api/socket/io')
+		// 	.then(() => {
+		// 		socket = io({
+		// 			path: '/api/socket_io/',
+		// 		});
+		// 		socket.emit('join-room', { rid: '1', emailId: 'aditya@2002' });
+		// 	})
+		// 	.then(() => {
+		// 		router.push(`/room/${rid}`);
+		// 	});
 	};
 
 	return (
