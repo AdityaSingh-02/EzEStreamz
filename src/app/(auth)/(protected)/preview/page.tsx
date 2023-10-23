@@ -1,10 +1,9 @@
 'use client';
-import React, { use, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import dynamic from 'next/dynamic';
 const ReactPlayer = dynamic(() => import('react-player'), { ssr: false });
 import { v4 } from 'uuid';
 import { useRouter } from 'next/navigation';
-import { io, Socket } from 'socket.io-client';
 
 // Contexts
 import { useVideo, useUserContext, useSocket } from '@/Context';
@@ -13,8 +12,6 @@ import { useVideo, useUserContext, useSocket } from '@/Context';
 import { BsCameraVideo, BsCameraVideoOff } from 'react-icons/bs';
 import { BiCopy } from 'react-icons/bi';
 import { MdDone } from 'react-icons/md';
-
-// import type { IWebSocketInit } from '@/server/webSocket';
 import appwriteService from '@/appwrite-service/config';
 
 const Preview = () => {
@@ -28,10 +25,9 @@ const Preview = () => {
 		email: '',
 	}); // User info
 
-	const { socket } = useSocket();
-
 	// Using Contexts
 	const { addUser } = useUserContext();
+	const { socket } = useSocket();
 
 	// gets uuid
 	// remember Do not use rid for routing purposes
@@ -50,6 +46,7 @@ const Preview = () => {
 			closeVideo();
 		}
 		getUserData();
+		// Socket Management
 		socket.on('joined-room', ({ rid }: any) => {
 			router.push(`/room/${rid}`);
 		});
@@ -90,17 +87,6 @@ const Preview = () => {
 		// Hook used to store user data
 		addUser({ emailUser1: userInfo.email, user1: userInfo.name, rid: roomId });
 		socket.emit('join-room', { rid: roomId, emailId: userInfo.email });
-		// Todo - Add Api call
-		// fetch('api/socket/io')
-		// 	.then(() => {
-		// 		socket = io({
-		// 			path: '/api/socket_io/',
-		// 		});
-		// 		socket.emit('join-room', { rid: '1', emailId: 'aditya@2002' });
-		// 	})
-		// 	.then(() => {
-		// 		router.push(`/room/${rid}`);
-		// 	});
 	};
 
 	return (
