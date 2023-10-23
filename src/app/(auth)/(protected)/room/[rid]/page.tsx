@@ -1,15 +1,12 @@
 'use client';
 import { usePeer } from '@/Context/usePeer';
 import { useVideo, useUserContext, useSocket } from '@/Context';
-import React, { useCallback, useEffect, useState } from 'react';
-import type { IWebSocketInit } from '@/types/socketData';
+import React, { useEffect, useState } from 'react';
 import { usePathname } from 'next/navigation';
 import ReactPlayer from 'react-player';
 import { BsCameraVideo, BsCameraVideoOff } from 'react-icons/bs';
-import { io } from 'socket.io-client';
 
 const Room = () => {
-	const [user2, setUser2] = useState('');
 	const [myVideo, setMyVideo] = useState<MediaStream>();
 	const { videoStatus, setVideoStatus } = useVideo();
 	const { createOffer } = usePeer();
@@ -21,7 +18,6 @@ const Room = () => {
 	const { socket } = useSocket();
 
 	useEffect(() => {
-		// user.user2 ? setUser2(user.user2) : null;
 		socket.on('user-joined', (data: any) => {
 			console.log(data);
 		});
@@ -31,7 +27,7 @@ const Room = () => {
 		} else {
 			closeVideoStream();
 		}
-	}, [videoStatus, user, user2, socket]);
+	}, [videoStatus, user, socket]);
 
 	// Handles Video Closing
 	const closeVideoStream = () => {
@@ -44,12 +40,6 @@ const Room = () => {
 	const toggleMyVideo = () => {
 		setVideoStatus(!videoStatus);
 	};
-
-	// const handleJoins = useCallback(async () => {
-	// 	const offer = await createOffer();
-	// 	// Creating Room and sending data
-	// 	// Todo add socket methods
-	// }, [createOffer]);
 
 	return (
 		<>
