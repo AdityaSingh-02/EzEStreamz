@@ -9,7 +9,7 @@ import { BsCameraVideo, BsCameraVideoOff } from 'react-icons/bs';
 const Room = () => {
 	const [myVideo, setMyVideo] = useState<MediaStream>();
 	const { videoStatus, setVideoStatus } = useVideo();
-	const { createOffer, peer } = usePeer();
+	const { createOffer, peer, createAnswer, setRemoteAns } = usePeer();
 	const { user } = useUserContext();
 
 	const pathName: string = usePathname()!;
@@ -27,16 +27,25 @@ const Room = () => {
 	);
 
 	const handleIncommingCall = useCallback(
-		(data: any) => {
+		async (data: any) => {
 			const { from, offer } = data;
 			console.log('Incomming call from - ', from, offer);
+			const ans = await createAnswer(offer);
+			socket.emit("call-accepted",{emailId: from, ans});
 		},
-		[],
+		[createAnswer, socket],
 	);
+
+	const handleCallAccepted = useCallback(async(data: any) => {
+		const {ans} = data;
+		console.log("call accepted", ans)
+		await setRemoteAns(ans)
+	},[])
 
 	useEffect(() => {
 		socket.on('user-joined', handleNewUserJoined);
 		socket.on('incomming-call', handleIncommingCall);
+		socket.on("call-accepted", handleCallAccepted)
 		if (videoStatus) {
 			navigator.mediaDevices.getUserMedia({ video: true, audio: true }).then((res) => setMyVideo(res));
 		} else {
@@ -47,7 +56,7 @@ const Room = () => {
 			socket.off('user-joined', handleNewUserJoined);
 			socket.off('incomming-call', handleIncommingCall);
 		};
-	}, [videoStatus, user, socket, handleIncommingCall, handleNewUserJoined]);
+	}, [videoStatus, user, socket, handleIncommingCall, handleNewUserJoined, handleCallAccepted]);
 
 	// Handles Video Closing
 	const closeVideoStream = () => {
