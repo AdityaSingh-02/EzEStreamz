@@ -15,3 +15,5 @@ export { useSocketConnection } from './Connection/socketConnection';
 
 // SocketIO connection
 export { SocketProvider, useSocket } from './Socket/socket-provider';
+
+export { usePeer, PeerProvider } from './usePeer';

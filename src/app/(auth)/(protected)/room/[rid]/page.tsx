@@ -1,7 +1,7 @@
 'use client';
-import { usePeer } from '@/Context/usePeer';
-import { useVideo, useUserContext, useSocket } from '@/Context';
-import React, { useEffect, useState } from 'react';
+
+import { useVideo, useUserContext, useSocket, usePeer } from '@/Context';
+import React, { useEffect, useState, useCallback } from 'react';
 import { usePathname } from 'next/navigation';
 import ReactPlayer from 'react-player';
 import { BsCameraVideo, BsCameraVideoOff } from 'react-icons/bs';
@@ -9,7 +9,7 @@ import { BsCameraVideo, BsCameraVideoOff } from 'react-icons/bs';
 const Room = () => {
 	const [myVideo, setMyVideo] = useState<MediaStream>();
 	const { videoStatus, setVideoStatus } = useVideo();
-	const { createOffer } = usePeer();
+	const { createOffer, peer } = usePeer();
 	const { user } = useUserContext();
 
 	const pathName: string = usePathname()!;
@@ -17,17 +17,37 @@ const Room = () => {
 
 	const { socket } = useSocket();
 
-	useEffect(() => {
-		socket.on('user-joined', (data: any) => {
-			console.log(data);
-		});
+	const handleNewUserJoined = useCallback(
+		async (data: any) => {
+			const { emailId } = data;
+			const offer = await createOffer();
+			socket.emit('call-user', { emailId, offer });
+		},
+		[createOffer, socket],
+	);
 
+	const handleIncommingCall = useCallback(
+		(data: any) => {
+			const { from, offer } = data;
+			console.log('Incomming call from - ', from, offer);
+		},
+		[],
+	);
+
+	useEffect(() => {
+		socket.on('user-joined', handleNewUserJoined);
+		socket.on('incomming-call', handleIncommingCall);
 		if (videoStatus) {
 			navigator.mediaDevices.getUserMedia({ video: true, audio: true }).then((res) => setMyVideo(res));
 		} else {
 			closeVideoStream();
 		}
-	}, [videoStatus, user, socket]);
+
+		return () => {
+			socket.off('user-joined', handleNewUserJoined);
+			socket.off('incomming-call', handleIncommingCall);
+		};
+	}, [videoStatus, user, socket, handleIncommingCall, handleNewUserJoined]);
 
 	// Handles Video Closing
 	const closeVideoStream = () => {

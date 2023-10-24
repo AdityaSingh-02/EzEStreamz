@@ -27,6 +27,12 @@ export default function handler(req: any, res: NextApiResponseServerIO) {
 			skt.emit('joined-room', { rid });
 			skt.broadcast.to(rid).emit('user-joined', { rid, emailId });
 		});
+		skt.on('call-user', (data) => {
+			const { emailId, offer } = data;
+			const fromEmail = socketIdToEmailMAP.get(skt.id);
+			const socketId = emailToSocketIdMAP.get(emailId);
+			skt.to(socketId).emit('incomming-call', { from: fromEmail, offer });
+		});
 	});
 
 	console.log('Socket server started successfully!');

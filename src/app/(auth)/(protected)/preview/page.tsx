@@ -1,5 +1,5 @@
 'use client';
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import dynamic from 'next/dynamic';
 const ReactPlayer = dynamic(() => import('react-player'), { ssr: false });
 import { v4 } from 'uuid';
@@ -36,6 +36,10 @@ const Preview = () => {
 		setRoomId(rid);
 	}
 
+	const createRoomRoute = useCallback(({ rid }: any) => {
+		router.push(`/room/${rid}`);
+	}, []);
+
 	// Manages video on and off state
 	useEffect(() => {
 		if (videoStatus) {
@@ -47,10 +51,12 @@ const Preview = () => {
 		}
 		getUserData();
 		// Socket Management
-		socket.on('joined-room', ({ rid }: any) => {
-			router.push(`/room/${rid}`);
-		});
-	}, [videoStatus, socket]);
+		socket.on('joined-room', createRoomRoute);
+
+		return () => {
+			socket.off('joined-room', createRoomRoute);
+		};
+	}, [videoStatus, socket, createRoomRoute]);
 
 	// Closes all the tracks for camera
 	const closeVideo = () => {
