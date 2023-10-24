@@ -31,21 +31,24 @@ const Room = () => {
 			const { from, offer } = data;
 			console.log('Incomming call from - ', from, offer);
 			const ans = await createAnswer(offer);
-			socket.emit("call-accepted",{emailId: from, ans});
+			socket.emit('call-accepted', { emailId: from, ans });
 		},
 		[createAnswer, socket],
 	);
 
-	const handleCallAccepted = useCallback(async(data: any) => {
-		const {ans} = data;
-		console.log("call accepted", ans)
-		await setRemoteAns(ans)
-	},[])
+	const handleCallAccepted = useCallback(
+		async (data: any) => {
+			const { ans } = data;
+			console.log('call accepted', ans);
+			await setRemoteAns(ans);
+		},
+		[setRemoteAns, socket],
+	);
 
 	useEffect(() => {
 		socket.on('user-joined', handleNewUserJoined);
 		socket.on('incomming-call', handleIncommingCall);
-		socket.on("call-accepted", handleCallAccepted)
+		socket.on('call-accepted', handleCallAccepted);
 		if (videoStatus) {
 			navigator.mediaDevices.getUserMedia({ video: true, audio: true }).then((res) => setMyVideo(res));
 		} else {
@@ -55,6 +58,7 @@ const Room = () => {
 		return () => {
 			socket.off('user-joined', handleNewUserJoined);
 			socket.off('incomming-call', handleIncommingCall);
+			socket.off('call-accepted', handleCallAccepted);
 		};
 	}, [videoStatus, user, socket, handleIncommingCall, handleNewUserJoined, handleCallAccepted]);
 
