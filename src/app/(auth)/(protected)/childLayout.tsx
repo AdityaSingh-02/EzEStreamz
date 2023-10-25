@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import UserProvider, { useAuth } from '@/Context/index';
 import { useRouter } from 'next/navigation';
 import { VideoProvider, SocketProvider } from '@/Context';
-import { PeerProvider } from '@/Context/usePeer';
+import { PeerProvider } from '@/Context';
 
 export default function ChildLayout({ children }: { children: React.ReactNode }) {
 	const router = useRouter();

@@ -1,5 +1,5 @@
 'use client';
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import dynamic from 'next/dynamic';
 const ReactPlayer = dynamic(() => import('react-player'), { ssr: false });
 import { useVideo } from '@/Context';
@@ -20,9 +20,11 @@ const Join = () => {
 
 	const { user, addUser } = useUserContext();
 	const router = useRouter();
-	const { createOffer } = usePeer();
-
 	const { socket } = useSocket();
+
+	const joinRoomRoute = useCallback(({ rid }: any) => {
+		router.push(`/room/${rid}`);
+	}, []);
 
 	useEffect(() => {
 		getUserData();
@@ -34,10 +36,11 @@ const Join = () => {
 			closeVideo();
 		}
 		// Socket Management
-		socket.on('joined-room', ({ rid }: any) => {
-			router.push(`/room/${rid}`);
-		});
-	}, [videoStatus, socket]);
+		socket.on('joined-room', joinRoomRoute);
+		return () => {
+			socket.off('joined-room', joinRoomRoute);
+		};
+	}, [videoStatus, socket, joinRoomRoute]);
 
 	const getUserData = async () => {
 		appwriteService.getUser().then(({ name, email }: any) => {
