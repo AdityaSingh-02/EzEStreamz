@@ -38,7 +38,6 @@ const Room = () => {
 	const handleIncommingCall = useCallback(
 		async (data: any) => {
 			const { from, offer } = data;
-			console.log('Incomming call from - ', from, offer);
 			const ans = await createAnswer(offer);
 			socket.emit('call-accepted', { emailId: from, ans });
 			setRemoteEmailId(from);
@@ -96,8 +95,8 @@ const Room = () => {
 			<div className='flex w-[100%] items-center h-screen '>
 				<div className='w-[70%] flex justify-center items-center border-2 border-gray-800 h-[80%] rounded-2xl m-10'>
 					<h2>Connected to {remoteEmailId}</h2>
+					<ReactPlayer url={remoteStream} playing height={500} width={800} />
 				</div>
-				<ReactPlayer url={remoteStream} playing height={500} width={800} />
 				<div className='w-[30%] flex flex-col justify-between py-10 border-2 px-7 border-gray-800 h-[90vh] m-10 rounded-2xl'>
 					<div className='border-2 border-red-400 h-[250px] rounded-2xl flex justify-center items-center'>
 						<ReactPlayer url={myVideo} playing muted height={240} width={800} />
