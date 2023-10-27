@@ -43,4 +43,12 @@ This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-opti
 <img width="752" alt="Screenshot 2023-09-30 at 10 36 10 PM" src="https://github.com/AdityaSingh-02/EzEStreamz/assets/94185167/065e3a04-a13a-4f25-99b2-5c3b27f70e9e">
 
 
+## What cooking??
+
+After Implementing video call feature, we aim to add some more things, want to know?? let's have a look 
+
+- Feature -> add friends to friend list
+- Feature -> Direct video call and chat option with friends
+- Feature -> add secret chat option where users join a room, talk and leave with no history behind.
+
   
