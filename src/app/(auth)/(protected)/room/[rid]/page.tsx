@@ -10,7 +10,7 @@ const Room = () => {
 	const [myVideo, setMyVideo] = useState<MediaStream>();
 	const [remoteEmailId, setRemoteEmailId] = useState();
 	const { videoStatus, setVideoStatus } = useVideo();
-	const { createOffer, peer, createAnswer, setRemoteAns, sendStream, remoteStream } = usePeer();
+	const { createNewOffer, peer, createNewAnswer, setRemoteAns, sendStream, remoteStream } = usePeer();
 	const { user } = useUserContext();
 	const { socket } = useSocket();
 
@@ -28,21 +28,23 @@ const Room = () => {
 	const handleNewUserJoined = useCallback(
 		async (data: any) => {
 			const { emailId } = data;
-			const offer = await createOffer();
+			const offer = await createNewOffer();
 			socket.emit('call-user', { emailId, offer });
+			console.log("111")
 			setRemoteEmailId(emailId);
 		},
-		[createOffer, socket],
+		[createNewOffer, socket],
 	);
 
-	const handleIncommingCall = useCallback(
+	const handleIncommingCall = useCallback(	//todo- fix - Method Not working
 		async (data: any) => {
 			const { from, offer } = data;
-			const ans = await createAnswer(offer);
+			const ans = await createNewAnswer(offer);
 			socket.emit('call-accepted', { emailId: from, ans });
+			console.log("222")
 			setRemoteEmailId(from);
 		},
-		[createAnswer, socket],
+		[createNewAnswer, socket],
 	);
 
 	const handleCallAccepted = useCallback(
@@ -90,12 +92,19 @@ const Room = () => {
 		setVideoStatus(!videoStatus);
 	};
 
+	const sendVideo = () => {
+		navigator.mediaDevices.getUserMedia({ video: true, audio: true }).then((res) => {
+			setMyVideo(res);
+			sendStream(res);
+		});
+	};
+
 	return (
 		<>
 			<div className='flex w-[100%] items-center h-screen '>
 				<div className='w-[70%] flex justify-center items-center border-2 border-gray-800 h-[80%] rounded-2xl m-10'>
 					<h2>Connected to {remoteEmailId}</h2>
-					<ReactPlayer url={remoteStream} playing height={500} width={800} />
+					<ReactPlayer url={remoteStream} playing muted height={500} width={800} />
 				</div>
 				<div className='w-[30%] flex flex-col justify-between py-10 border-2 px-7 border-gray-800 h-[90vh] m-10 rounded-2xl'>
 					<div className='border-2 border-red-400 h-[250px] rounded-2xl flex justify-center items-center'>
@@ -103,12 +112,13 @@ const Room = () => {
 					</div>
 					<div className='border-2 border-red-400 h-[400px] rounded-2xl flex justify-center items-center'>Details : WIP BETA</div>
 					<div className=' flex justify-center '>
-						<button
+						{/* <button
 							onClick={toggleMyVideo}
 							className={`px-4 py-2 flex justify-center rounded-md ${videoStatus ? 'bg-red-500' : 'bg-green-500'} mx-2 text-xl`}
 						>
 							{videoStatus ? <BsCameraVideoOff /> : <BsCameraVideo />}
-						</button>
+						</button> */}
+						<button onClick={sendVideo}>sendStream</button>
 					</div>
 				</div>
 			</div>

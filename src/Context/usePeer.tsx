@@ -27,13 +27,13 @@ export const PeerProvider = (props: any) => {
 
 	const peer = useMemo<any>(() => new RTCPeerConnection(servers), []);
 
-	const createOffer = async () => {
+	const createNewOffer = async () => {
 		const offer = await peer.createOffer();
 		await peer.setLocalDescription(offer);
 		return offer;
 	};
 
-	const createAnswer = async (offer: RTCSessionDescriptionInit) => {
+	const createNewAnswer = async (offer: RTCSessionDescriptionInit) => {
 		await peer.setRemoteDescription(offer);
 		const answer = await peer.createAnswer();
 		await peer.setLocalDescription(answer);
@@ -63,7 +63,7 @@ export const PeerProvider = (props: any) => {
 	}, [peer, handleTrackEvent]);
 
 	return (
-		<PeerContext.Provider value={{ peer, createOffer, createAnswer, setRemoteAns, sendStream, remoteStream }}>
+		<PeerContext.Provider value={{ peer, createNewOffer, createNewAnswer, setRemoteAns, sendStream, remoteStream }}>
 			{props.children}
 		</PeerContext.Provider>
 	);
