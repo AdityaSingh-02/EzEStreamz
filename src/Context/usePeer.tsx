@@ -25,7 +25,7 @@ export const PeerProvider = (props: any) => {
 		],
 	};
 
-	const peer = useMemo<any>(() => new RTCPeerConnection(servers), []);
+	const peer = useMemo<RTCPeerConnection>(() => new RTCPeerConnection(servers), []);
 
 	const createNewOffer = async () => {
 		const offer = await peer.createOffer();
@@ -34,14 +34,15 @@ export const PeerProvider = (props: any) => {
 	};
 
 	const createNewAnswer = async (offer: any) => {
-		await peer.setRemoteDescription(offer);
+		await peer.setRemoteDescription(new RTCSessionDescription(offer));
 		const answer = await peer.createAnswer();
-		await peer.setLocalDescription(answer);
+		await peer.setLocalDescription(new RTCSessionDescription(answer));
 		return answer;
 	};
 
 	const setRemoteAns = async (ans: any) => {
-		await peer.setRemoteDescription(ans);
+		await peer.setLocalDescription(ans);
+		await peer.setRemoteDescription(new RTCSessionDescription(ans));
 	};
 
 	const sendStream = async (stream: MediaStream) => {

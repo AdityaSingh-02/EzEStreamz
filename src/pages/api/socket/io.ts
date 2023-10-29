@@ -23,8 +23,8 @@ export default function handler(req: any, res: NextApiResponseServerIO) {
 			console.log('user', emailId, 'joined', rid);
 			emailToSocketIdMAP.set(emailId, skt.id);
 			socketIdToEmailMAP.set(skt.id, emailId);
-			console.log("This was joinroom Sktid", skt.id);
-			console.log("Join-room from email -> ", emailId);
+			// console.log("This was joinroom Sktid", skt.id);
+			// console.log("Join-room from email -> ", emailId);
 			skt.join(rid);
 			skt.emit('joined-room', { rid });
 			// skt.broadcast.to(rid).emit('user-joined', { rid, emailId });
@@ -35,9 +35,9 @@ export default function handler(req: any, res: NextApiResponseServerIO) {
 			const { emailId, offer } = data;
 			const fromEmail = socketIdToEmailMAP.get(skt.id);
 			const sktID = emailToSocketIdMAP.get(emailId);
-			console.log("actual SKT>ID was ----------> ", skt.id);
-			console.log("This was calluser Sktid", sktID);
-			console.log("call user from Emial -> ",fromEmail);
+			// console.log("actual SKT>ID was ----------> ", skt.id);
+			// console.log("This was calluser Sktid", sktID);
+			// console.log("call user from Emial -> ",fromEmail);
 			// skt.to(skt.id).emit('incomming-call', { from: fromEmail, offer });
 			io.to(skt.id).emit('incomming-call', { from: fromEmail, offer });
 		});
@@ -45,7 +45,7 @@ export default function handler(req: any, res: NextApiResponseServerIO) {
 		skt.on('call-accepted', (data: any) => {
 			const { emailId, ans } = data;
 			const socketId = emailToSocketIdMAP.get(emailId);
-			console.log("This was callaccepted Sktid", skt.id);
+			// console.log("This was callaccepted Sktid", skt.id);
 			// skt.to(socketId).emit('call-accepted', { ans });
 			io.to(socketId).emit('call-accepted', { ans });
 		});
