@@ -16,10 +16,10 @@ export const PeerProvider = (props: any) => {
 		iceServers: [
 			{
 				urls: [
+					'stun:global.stun.twilio.com:3478',
 					'stun:stun.l.google.com:19302',
 					'stun:stun1.l.google.com:19302',
 					'stun:stun2.l.google.com:19302',
-					'stun:global.stun.twilio.com:3478',
 				],
 			},
 		],
@@ -33,14 +33,14 @@ export const PeerProvider = (props: any) => {
 		return offer;
 	};
 
-	const createNewAnswer = async (offer: RTCSessionDescriptionInit) => {
+	const createNewAnswer = async (offer: any) => {
 		await peer.setRemoteDescription(offer);
 		const answer = await peer.createAnswer();
 		await peer.setLocalDescription(answer);
 		return answer;
 	};
 
-	const setRemoteAns = async (ans: RTCSessionDescriptionInit) => {
+	const setRemoteAns = async (ans: any) => {
 		await peer.setRemoteDescription(ans);
 	};
 

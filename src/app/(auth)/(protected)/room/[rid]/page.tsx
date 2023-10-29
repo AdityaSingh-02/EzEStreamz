@@ -38,10 +38,10 @@ const Room = () => {
 
 	const handleIncommingCall = useCallback(	//todo- fix - Method Not working
 		async (data: any) => {
+			console.log("222")
 			const { from, offer } = data;
 			const ans = await createNewAnswer(offer);
 			socket.emit('call-accepted', { emailId: from, ans });
-			console.log("222")
 			setRemoteEmailId(from);
 		},
 		[createNewAnswer, socket],
@@ -50,6 +50,7 @@ const Room = () => {
 	const handleCallAccepted = useCallback(
 		async (data: any) => {
 			const { ans } = data;
+			console.log("call accepted", ans)
 			await setRemoteAns(ans);
 		},
 		[setRemoteAns, socket],
@@ -78,6 +79,7 @@ const Room = () => {
 
 	const handleNegotiations = useCallback(() => {
 		const localOffer = peer.localDescription;
+		console.log("333")
 		socket.emit('call-user', { emailId: remoteEmailId, offer: localOffer });
 	}, [peer.localDescription, remoteEmailId, socket]);
 
