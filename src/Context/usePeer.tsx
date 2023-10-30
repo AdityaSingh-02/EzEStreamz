@@ -16,32 +16,33 @@ export const PeerProvider = (props: any) => {
 		iceServers: [
 			{
 				urls: [
+					'stun:global.stun.twilio.com:3478',
 					'stun:stun.l.google.com:19302',
 					'stun:stun1.l.google.com:19302',
 					'stun:stun2.l.google.com:19302',
-					'stun:global.stun.twilio.com:3478',
 				],
 			},
 		],
 	};
 
-	const peer = useMemo<any>(() => new RTCPeerConnection(servers), []);
+	const peer = useMemo<RTCPeerConnection>(() => new RTCPeerConnection(servers), []);
 
-	const createOffer = async () => {
+	const createNewOffer = async () => {
 		const offer = await peer.createOffer();
-		await peer.setLocalDescription(offer);
+		await peer.setLocalDescription(new RTCSessionDescription(offer));
 		return offer;
 	};
 
-	const createAnswer = async (offer: RTCSessionDescriptionInit) => {
-		await peer.setRemoteDescription(offer);
+	const createNewAnswer = async (offer: any) => {
+		await peer.setRemoteDescription(new RTCSessionDescription(offer));
 		const answer = await peer.createAnswer();
-		await peer.setLocalDescription(answer);
+		await peer.setLocalDescription(new RTCSessionDescription(answer));
 		return answer;
 	};
 
-	const setRemoteAns = async (ans: RTCSessionDescriptionInit) => {
-		await peer.setRemoteDescription(ans);
+	const setRemoteAns = async (ans: any) => {
+		await peer.setLocalDescription(new RTCSessionDescription(ans));
+		await peer.setRemoteDescription(new RTCSessionDescription(ans));
 	};
 
 	const sendStream = async (stream: MediaStream) => {
@@ -63,7 +64,7 @@ export const PeerProvider = (props: any) => {
 	}, [peer, handleTrackEvent]);
 
 	return (
-		<PeerContext.Provider value={{ peer, createOffer, createAnswer, setRemoteAns, sendStream, remoteStream }}>
+		<PeerContext.Provider value={{ peer, createNewOffer, createNewAnswer, setRemoteAns, sendStream, remoteStream }}>
 			{props.children}
 		</PeerContext.Provider>
 	);
