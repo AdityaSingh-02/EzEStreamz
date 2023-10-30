@@ -29,7 +29,7 @@ export const PeerProvider = (props: any) => {
 
 	const createNewOffer = async () => {
 		const offer = await peer.createOffer();
-		await peer.setLocalDescription(offer);
+		await peer.setLocalDescription(new RTCSessionDescription(offer));
 		return offer;
 	};
 
@@ -41,7 +41,7 @@ export const PeerProvider = (props: any) => {
 	};
 
 	const setRemoteAns = async (ans: any) => {
-		await peer.setLocalDescription(ans);
+		await peer.setLocalDescription(new RTCSessionDescription(ans));
 		await peer.setRemoteDescription(new RTCSessionDescription(ans));
 	};
 

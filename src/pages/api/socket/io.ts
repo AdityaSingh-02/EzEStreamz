@@ -25,10 +25,10 @@ export default function handler(req: any, res: NextApiResponseServerIO) {
 			socketIdToEmailMAP.set(skt.id, emailId);
 			// console.log("This was joinroom Sktid", skt.id);
 			// console.log("Join-room from email -> ", emailId);
+			io.to(rid).emit('user-joined', { rid, emailId });
 			skt.join(rid);
 			skt.emit('joined-room', { rid });
 			// skt.broadcast.to(rid).emit('user-joined', { rid, emailId });
-			io.to(rid).emit('user-joined', { rid, emailId });
 		});
 
 		skt.on('call-user', (data) => {

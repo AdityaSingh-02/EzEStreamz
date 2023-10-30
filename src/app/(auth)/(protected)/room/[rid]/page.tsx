@@ -40,6 +40,7 @@ const Room = () => {
 		async (data: any) => {
 			console.log("222")
 			const { from, offer } = data;
+			console.log(data);
 			const ans = await createNewAnswer(offer);
 			socket.emit('call-accepted', { emailId: from, ans });
 			setRemoteEmailId(from);
@@ -96,8 +97,8 @@ const Room = () => {
 
 	const sendVideo = () => {
 		navigator.mediaDevices.getUserMedia({ video: true, audio: true }).then((res) => {
-			setMyVideo(res);
 			sendStream(res);
+			setMyVideo(res);
 		});
 	};
 
