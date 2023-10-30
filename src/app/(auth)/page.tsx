@@ -4,6 +4,10 @@ import Link from "next/link";
 import useAuth from "@/Context/Authentication/useAuth";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
+import Login from "./login/page";
+import { Inria_Sans } from "next/font/google";
+
+const inria = Inria_Sans({ subsets: ["latin"], weight: "400" });
 
 export default function Home() {
   const router = useRouter();
