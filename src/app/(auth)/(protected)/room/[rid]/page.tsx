@@ -6,13 +6,19 @@ import { usePathname } from 'next/navigation';
 import ReactPlayer from 'react-player';
 import { BsCameraVideo, BsCameraVideoOff } from 'react-icons/bs';
 
+// Test migrate
+import peerService from '@/services/peerservice';
+
 const Room = () => {
 	const [myVideo, setMyVideo] = useState<MediaStream>();
 	const [remoteEmailId, setRemoteEmailId] = useState();
 	const { videoStatus, setVideoStatus } = useVideo();
-	const { createNewOffer, peer, createNewAnswer, setRemoteAns, sendStream, remoteStream } = usePeer();
+	// const { createNewOffer, peer, createNewAnswer, setRemoteAns, sendStream, remoteStream } = usePeer();
 	const { user } = useUserContext();
 	const { socket } = useSocket();
+
+	// Test Migration
+	const [remoteStream, setRemoteStream] = useState<MediaStream>();
 
 	const pathName: string = usePathname()!;
 	const rid = pathName.split('/')[2];
@@ -28,33 +34,47 @@ const Room = () => {
 	const handleNewUserJoined = useCallback(
 		async (data: any) => {
 			const { emailId } = data;
-			const offer = await createNewOffer();
+			// const offer = await createNewOffer();
+			// test
+			const offer = await peerService.getOffer();
 			socket.emit('call-user', { emailId, offer });
-			console.log("111")
+			console.log('111');
 			setRemoteEmailId(emailId);
 		},
-		[createNewOffer, socket],
+		// [createNewOffer, socket],
+		[peerService.getOffer, socket],
 	);
 
-	const handleIncommingCall = useCallback(	//todo- fix - Method Not working
+	const handleIncommingCall = useCallback(
+		//todo- fix - Method Not working
 		async (data: any) => {
-			console.log("222")
+			console.log('222');
 			const { from, offer } = data;
 			console.log(data);
-			const ans = await createNewAnswer(offer);
+			// const ans = await createNewAnswer(offer);
+			// test
+			const ans = await peerService.getAnswer(offer);
 			socket.emit('call-accepted', { emailId: from, ans });
 			setRemoteEmailId(from);
 		},
-		[createNewAnswer, socket],
+		// [createNewAnswer, socket],
+		[peerService.getAnswer, socket],
 	);
 
 	const handleCallAccepted = useCallback(
 		async (data: any) => {
 			const { ans } = data;
-			console.log("call accepted", ans)
-			await setRemoteAns(ans);
+			console.log('call accepted', ans);
+			// await setRemoteAns(ans);
+			// Test-------------
+			peerService.setLocalDescription(ans);
+			for (const tr of myVideo!.getTracks()) {
+				peerService.peer.addTrack(tr, myVideo!);
+			}
+			// --------------
 		},
-		[setRemoteAns, socket],
+		// [setRemoteAns, socket],
+		[peerService.setLocalDescription, socket, myVideo],
 	);
 
 	useEffect(() => {
@@ -65,7 +85,8 @@ const Room = () => {
 		if (videoStatus) {
 			navigator.mediaDevices.getUserMedia({ video: true, audio: true }).then((res) => {
 				setMyVideo(res);
-				sendStream(res);
+				// Test Migration
+				// sendStream(res);
 			});
 		} else {
 			closeVideoStream();
@@ -76,18 +97,30 @@ const Room = () => {
 			socket.off('incomming-call', handleIncommingCall);
 			socket.off('call-accepted', handleCallAccepted);
 		};
-	}, [videoStatus, user, socket, handleIncommingCall, handleNewUserJoined, handleCallAccepted, sendStream]);
+		// }, [videoStatus, user, socket, handleIncommingCall, handleNewUserJoined, handleCallAccepted, sendStream]);
+		// Test - migration
+	}, [videoStatus, user, socket, handleIncommingCall, handleNewUserJoined, handleCallAccepted]);
 
 	const handleNegotiations = useCallback(() => {
-		const localOffer = peer.localDescription;
-		console.log("333")
-		socket.emit('call-user', { emailId: remoteEmailId, offer: localOffer });
-	}, [peer.localDescription, remoteEmailId, socket]);
+		// const localOffer = peer.localDescription;
+		console.log('333');
+		// socket.emit('call-user', { emailId: remoteEmailId, offer: localOffer });
+		// }, [peer.localDescription, remoteEmailId, socket]);
+		// Test migration
+		const offer = peerService.getOffer();
+		// socket.emit('call-user', { emailId: remoteEmailId, offer: localOffer });
+	}, [remoteEmailId, socket]);
 
 	useEffect(() => {
-		peer.addEventListener('negotiationneeded', handleNegotiations);
+		// peer.addEventListener('negotiationneeded', handleNegotiations);
+		// Test Migration
+		peerService.peer.addEventListener('negotiationneeded', handleNegotiations);
+		peerService.peer.addEventListener('track', async (ev) => {
+			const remoteStr: any = ev.streams;
+			setRemoteStream(remoteStr)
+		});
 		return () => {
-			peer.removeEventListener('negotiationneeded', handleNegotiations);
+			// peer.removeEventListener('negotiationneeded', handleNegotiations);
 		};
 	}, [handleNegotiations]);
 
@@ -97,7 +130,7 @@ const Room = () => {
 
 	const sendVideo = () => {
 		navigator.mediaDevices.getUserMedia({ video: true, audio: true }).then((res) => {
-			sendStream(res);
+			// sendStream(res);
 			setMyVideo(res);
 		});
 	};
