@@ -28,6 +28,7 @@ export default function handler(req: any, res: NextApiResponseServerIO) {
 			io.to(rid).emit('user-joined', { rid, emailId });
 			skt.join(rid);
 			skt.emit('joined-room', { rid });
+			io.to(skt.id).emit("join-room", data);
 			// skt.broadcast.to(rid).emit('user-joined', { rid, emailId });
 		});
 

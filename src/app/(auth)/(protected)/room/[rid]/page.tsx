@@ -61,6 +61,12 @@ const Room = () => {
 		[peerService.getAnswer, socket],
 	);
 
+	const sendStream = useCallback(() => {
+		myVideo?.getTracks().forEach((track) => {
+			peerService.peer.addTrack(track, myVideo);
+		});
+	}, []);
+
 	const handleCallAccepted = useCallback(
 		async (data: any) => {
 			const { ans } = data;
@@ -68,9 +74,7 @@ const Room = () => {
 			// await setRemoteAns(ans);
 			// Test-------------
 			peerService.setLocalDescription(ans);
-			for (const tr of myVideo!.getTracks()) {
-				peerService.peer.addTrack(tr, myVideo!);
-			}
+			sendStream();
 		},
 		// [setRemoteAns, socket],
 		[peerService.setLocalDescription, socket, myVideo],
@@ -116,7 +120,7 @@ const Room = () => {
 		peerService.peer.addEventListener('negotiationneeded', handleNegotiations);
 		peerService.peer.addEventListener('track', async (ev) => {
 			const remoteStr: any = ev.streams;
-			setRemoteStream(remoteStr[0])
+			setRemoteStream(remoteStr[0]);
 		});
 		return () => {
 			// peer.removeEventListener('negotiationneeded', handleNegotiations);
@@ -139,7 +143,7 @@ const Room = () => {
 			<div className='flex w-[100%] items-center h-screen '>
 				<div className='w-[70%] flex justify-center items-center border-2 border-gray-800 h-[80%] rounded-2xl m-10'>
 					<h2>Connected to {remoteEmailId}</h2>
-					<ReactPlayer url={remoteStream} playing muted height={500} width={800} />
+					{remoteStream && <ReactPlayer url={remoteStream} playing muted height={500} width={800} />}
 				</div>
 				<div className='w-[30%] flex flex-col justify-between py-10 border-2 px-7 border-gray-800 h-[90vh] m-10 rounded-2xl'>
 					<div className='border-2 border-red-400 h-[250px] rounded-2xl flex justify-center items-center'>
