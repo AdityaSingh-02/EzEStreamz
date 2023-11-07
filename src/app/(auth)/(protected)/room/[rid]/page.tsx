@@ -71,7 +71,6 @@ const Room = () => {
 			for (const tr of myVideo!.getTracks()) {
 				peerService.peer.addTrack(tr, myVideo!);
 			}
-			// --------------
 		},
 		// [setRemoteAns, socket],
 		[peerService.setLocalDescription, socket, myVideo],
@@ -117,7 +116,7 @@ const Room = () => {
 		peerService.peer.addEventListener('negotiationneeded', handleNegotiations);
 		peerService.peer.addEventListener('track', async (ev) => {
 			const remoteStr: any = ev.streams;
-			setRemoteStream(remoteStr)
+			setRemoteStream(remoteStr[0])
 		});
 		return () => {
 			// peer.removeEventListener('negotiationneeded', handleNegotiations);
