@@ -19,6 +19,7 @@ const Room = () => {
 
 	// Test Migration
 	const [remoteStream, setRemoteStream] = useState<MediaStream>();
+	const [remoteSocketID, setRemoteSocketId] = useState();
 
 	const pathName: string = usePathname()!;
 	const rid = pathName.split('/')[2];
@@ -33,45 +34,49 @@ const Room = () => {
 
 	const handleNewUserJoined = useCallback(
 		async (data: any) => {
-			const { emailId } = data;
-			// const offer = await createNewOffer();
+			const { rid, emailId, id } = data;
+			console.log("THHEEE data ", data);
 			// test
 			const offer = await peerService.getOffer();
 			socket.emit('call-user', { emailId, offer });
 			console.log('111');
 			setRemoteEmailId(emailId);
+			setRemoteSocketId(id);
+			const stream = await navigator.mediaDevices.getUserMedia({audio:true, video:true});
+			setMyVideo(stream);
 		},
 		// [createNewOffer, socket],
-		[peerService.getOffer, socket],
+		[socket],
 	);
 
 	const handleIncommingCall = useCallback(
 		//todo- fix - Method Not working
 		async (data: any) => {
 			console.log('222');
-			const { from, offer } = data;
-			console.log(data);
-			// const ans = await createNewAnswer(offer);
+			const { from, offer, email } = data;
+			console.log("The Data 2",data);
+			setRemoteSocketId(from);
 			// test
 			const ans = await peerService.getAnswer(offer);
-			socket.emit('call-accepted', { emailId: from, ans });
-			setRemoteEmailId(from);
+			socket.emit('call-accepted', { to: from, ans });
+			setRemoteEmailId(email);
+			const stream = await navigator.mediaDevices.getUserMedia({audio:true, video:true});
+			setMyVideo(stream);
 		},
 		// [createNewAnswer, socket],
-		[peerService.getAnswer, socket],
+		[socket],
 	);
 
 	const sendStream = useCallback(() => {
 		myVideo?.getTracks().forEach((track) => {
 			peerService.peer.addTrack(track, myVideo);
 		});
-	}, []);
+	}, [myVideo]);
 
 	const handleCallAccepted = useCallback(
 		async (data: any) => {
 			const { ans } = data;
 			console.log('call accepted', ans);
-			// await setRemoteAns(ans);
 			// Test-------------
 			peerService.setLocalDescription(ans);
 			sendStream();
@@ -100,30 +105,26 @@ const Room = () => {
 			socket.off('incomming-call', handleIncommingCall);
 			socket.off('call-accepted', handleCallAccepted);
 		};
-		// }, [videoStatus, user, socket, handleIncommingCall, handleNewUserJoined, handleCallAccepted, sendStream]);
 		// Test - migration
 	}, [videoStatus, user, socket, handleIncommingCall, handleNewUserJoined, handleCallAccepted]);
 
 	const handleNegotiations = useCallback(() => {
-		// const localOffer = peer.localDescription;
 		console.log('333');
-		// socket.emit('call-user', { emailId: remoteEmailId, offer: localOffer });
-		// }, [peer.localDescription, remoteEmailId, socket]);
 		// Test migration
 		const offer = peerService.getOffer();
-		// socket.emit('call-user', { emailId: remoteEmailId, offer: localOffer });
+		socket.emit('call-user', { emailId: remoteEmailId, offer });
 	}, [remoteEmailId, socket]);
 
 	useEffect(() => {
-		// peer.addEventListener('negotiationneeded', handleNegotiations);
 		// Test Migration
 		peerService.peer.addEventListener('negotiationneeded', handleNegotiations);
 		peerService.peer.addEventListener('track', async (ev) => {
-			const remoteStr: any = ev.streams;
-			setRemoteStream(remoteStr[0]);
+			const stream: any = ev.streams;
+			console.log("got stream");
+			setRemoteStream(stream[0]);
 		});
 		return () => {
-			// peer.removeEventListener('negotiationneeded', handleNegotiations);
+			peerService.peer.removeEventListener('negotiationneeded', handleNegotiations);
 		};
 	}, [handleNegotiations]);
 
@@ -135,15 +136,17 @@ const Room = () => {
 		navigator.mediaDevices.getUserMedia({ video: true, audio: true }).then((res) => {
 			// sendStream(res);
 			setMyVideo(res);
+			sendStream();
 		});
 	};
+
 
 	return (
 		<>
 			<div className='flex w-[100%] items-center h-screen '>
 				<div className='w-[70%] flex justify-center items-center border-2 border-gray-800 h-[80%] rounded-2xl m-10'>
-					<h2>Connected to {remoteEmailId}</h2>
-					{remoteStream && <ReactPlayer url={remoteStream} playing muted height={500} width={800} />}
+					{/* <h2>Connected to {remoteEmailId}</h2> */}
+					{remoteStream && <ReactPlayer url={myVideo} playing muted height={500} width={800} />}
 				</div>
 				<div className='w-[30%] flex flex-col justify-between py-10 border-2 px-7 border-gray-800 h-[90vh] m-10 rounded-2xl'>
 					<div className='border-2 border-red-400 h-[250px] rounded-2xl flex justify-center items-center'>
