@@ -1,46 +1,81 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Turborepo starter
 
-## Getting Started
+This is an official starter Turborepo.
 
-First, run the development server:
+## Using this example
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
+Run the following command:
+
+```sh
+npx create-turbo@latest
+```
+
+## What's inside?
+
+This Turborepo includes the following packages/apps:
+
+### Apps and Packages
+
+- `docs`: a [Next.js](https://nextjs.org/) app
+- `web`: another [Next.js](https://nextjs.org/) app
+- `@repo/ui`: a stub React component library shared by both `web` and `docs` applications
+- `@repo/eslint-config`: `eslint` configurations (includes `eslint-config-next` and `eslint-config-prettier`)
+- `@repo/typescript-config`: `tsconfig.json`s used throughout the monorepo
+
+Each package/app is 100% [TypeScript](https://www.typescriptlang.org/).
+
+### Utilities
+
+This Turborepo has some additional tools already setup for you:
+
+- [TypeScript](https://www.typescriptlang.org/) for static type checking
+- [ESLint](https://eslint.org/) for code linting
+- [Prettier](https://prettier.io) for code formatting
+
+### Build
+
+To build all apps and packages, run the following command:
+
+```
+cd my-turborepo
+pnpm build
+```
+
+### Develop
+
+To develop all apps and packages, run the following command:
+
+```
+cd my-turborepo
 pnpm dev
 ```
 
-### Create a new .env file and copy the content of .sample.env > .env file.
+### Remote Caching
 
-![code](https://github.com/AdityaSingh-02/EzEStreamz/assets/94185167/837e858e-79ed-4c0a-8682-5de6025b739d)
+Turborepo can use a technique known as [Remote Caching](https://turbo.build/repo/docs/core-concepts/remote-caching) to share cache artifacts across machines, enabling you to share build caches with your team and CI/CD pipelines.
 
-### Create an account in Appwrite and then Create a new empty project for web apps in [Appwrite](https://cloud.appwrite.io/) , get the API key and paste in .env file
+By default, Turborepo will cache locally. To enable Remote Caching you will need an account with Vercel. If you don't have an account you can [create one](https://vercel.com/signup), then enter the following commands:
 
-<img width="1483" alt="Screenshot 2023-10-05 at 8 06 55 PM" src="https://github.com/AdityaSingh-02/EzEStreamz/assets/94185167/c5c85b34-fe55-4e65-8974-35f83105b716">
+```
+cd my-turborepo
+npx turbo login
+```
 
+This will authenticate the Turborepo CLI with your [Vercel account](https://vercel.com/docs/concepts/personal-accounts/overview).
 
-### Install all the dependencies and get started with npm run dev, create account and check whether appwrite service is working or not.
+Next, you can link your Turborepo to your Remote Cache by running the following command from the root of your Turborepo:
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+```
+npx turbo link
+```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Useful Links
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+Learn more about the power of Turborepo:
 
-# Contribute
-
-**Hey Folks I would appreciate if anyone wants to contribute to this repo, and make this application even better**
-
-## Repository Structure
-
-- When a user logs in successfully, they get the option to create a room as well as join a room by entering 12 digits unique RID, and by both ways, the user is redirected to /rooms/:rid, in the next js the folder would be named as room/[rid]
-
-- To know more about the folder structure read the nextJs docs. All folder in "(this)" format are usually not accessible if not logged in. Hence in order to access secure content add appwrite service and then login.
-
-
-<img width="752" alt="Screenshot 2023-09-30 at 10 36 10 PM" src="https://github.com/AdityaSingh-02/EzEStreamz/assets/94185167/065e3a04-a13a-4f25-99b2-5c3b27f70e9e">
-
-
-  
+- [Tasks](https://turbo.build/repo/docs/core-concepts/monorepos/running-tasks)
+- [Caching](https://turbo.build/repo/docs/core-concepts/caching)
+- [Remote Caching](https://turbo.build/repo/docs/core-concepts/remote-caching)
+- [Filtering](https://turbo.build/repo/docs/core-concepts/monorepos/filtering)
+- [Configuration Options](https://turbo.build/repo/docs/reference/configuration)
+- [CLI Usage](https://turbo.build/repo/docs/reference/command-line-reference)

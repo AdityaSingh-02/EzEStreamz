@@ -1,43 +1,27 @@
 {
-  "name": "web-rtc",
-  "version": "0.1.0",
+  "name": "my-turborepo",
   "private": true,
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
-    "lint": "next lint"
-  },
-  "dependencies": {
-    "@types/node": "20.4.1",
-    "@types/react": "18.2.14",
-    "@types/react-dom": "18.2.6",
-    "appwrite": "^11.0.0",
-    "autoprefixer": "10.4.14",
-    "axios": "^1.4.0",
-    "cors": "^2.8.5",
-    "encoding": "^0.1.13",
-    "eslint": "8.44.0",
-    "eslint-config-next": "13.4.9",
-    "http": "^0.0.1-security",
-    "next": "13.4.9",
-    "postcss": "8.4.25",
-    "react": "18.2.0",
-    "react-dom": "18.2.0",
-    "react-icons": "^4.10.1",
-    "react-player": "^2.12.0",
-    "socket.io": "^4.7.2",
-    "socket.io-client": "^4.7.2",
-    "tailwindcss": "3.3.2",
-    "typescript": "5.1.6",
-    "uuid": "^9.0.0",
-    "websocket": "^1.0.34",
-    "ws": "^8.13.0"
+    "build": "turbo build",
+    "dev": "turbo dev",
+    "lint": "turbo lint",
+    "format": "prettier --write \"**/*.{ts,tsx,md}\""
   },
   "devDependencies": {
-    "@types/uuid": "^9.0.2",
-    "@types/websocket": "^1.0.5",
-    "@types/ws": "^8.5.5",
-    "prettier": "3.0.3"
+    "@repo/eslint-config": "*",
+    "@repo/typescript-config": "*",
+    "prettier": "^3.1.0",
+    "turbo": "latest"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "packageManager": "npm@9.8.1",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "dependencies": {
+    "nodemon": "^3.0.2"
   }
 }
