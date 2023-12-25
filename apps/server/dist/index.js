@@ -5,22 +5,34 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const express = require("express");
 const ws_1 = __importDefault(require("ws"));
-const websocket_1 = __importDefault(require("./websocket"));
 const app = express();
 app.get("/", (req, res) => {
     res.send("Hello world");
 });
 app.get("/api", (req, res) => {
     try {
-        (0, websocket_1.default)();
-        function connectToServer() {
-            const ws = new ws_1.default("ws://localhost:7071/ws");
-            console.log("ws");
-        }
-        (connectToServer());
+        // WebSocketFunction();
+        const ws = new ws_1.default("ws://localhost:7071/ws");
+        ws.emit("get-messages", { message: "hello" });
     }
     catch (error) {
         console.log("err");
     }
 });
 app.listen(8080);
+const wss = new ws_1.default.Server({ port: 7071 });
+wss.on("connection", (ws) => {
+    console.log("Someone connected");
+    ws.on("message", (message) => {
+        console.log("message: %s", message);
+        ws.send(`Hello from server, you sent -> ${message}`);
+    });
+    ws.on("get-messages", (message) => {
+        console.log(message);
+        ws.send("Hello from server, you sent -> ", message);
+    });
+    ws.on("close", () => {
+        console.log("Someone disconnected");
+    });
+    console.log("wss up");
+});
