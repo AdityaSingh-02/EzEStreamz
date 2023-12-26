@@ -15,7 +15,10 @@ export default function Home() {
 			router.replace('/profile');
 		}
 		if (socket) {
-      socket.send('Hello from client')
+      socket.send('hello')
+			socket.onmessage = (e: any) => {
+        console.log(e.data);
+      }
 		}
 	}, [socket]);
 

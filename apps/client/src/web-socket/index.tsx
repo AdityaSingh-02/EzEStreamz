@@ -1,7 +1,13 @@
 'use client';
 import React, { ReactNode, createContext, useContext, useEffect, useState } from 'react';
 
-const WebSocketContext = createContext(null);
+interface ISocketContext {
+	socket: any | null;
+}
+
+const WebSocketContext = createContext<ISocketContext>({
+	socket: null,
+});
 
 export const WebSocketProvider = ({ url, children }: { url: string; children: ReactNode }) => {
 	const [socket, setSocket] = useState<any>(null);
