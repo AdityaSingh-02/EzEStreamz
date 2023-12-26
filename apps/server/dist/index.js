@@ -20,9 +20,13 @@ const port = 8080;
 const server = http_1.default.createServer(app);
 const wss = new ws_1.WebSocketServer({ server });
 wss.on("connection", (ws, req) => __awaiter(void 0, void 0, void 0, function* () {
+    console.log("connected to websocket hii");
     ws.on("message", (message) => {
         console.log("received: %s", message);
         ws.send(`Hello, you sent -> ${message}`);
+    });
+    ws.on("close", () => {
+        console.log("Client disconnected");
     });
 }));
 app.get("/", (req, res) => {
