@@ -1,41 +1,23 @@
 const express = require("express");
-import WebSocket from "ws";
-import WebSocketFunction from "./websocket";
-import uuidv4 from "./uid";
+import http from "http";
+import { WebSocketServer } from "ws";
 
 const app = express();
+const port = 8080;
 
-app.get("/", (req: any, res: any) => {
-  res.send("Hello world");
+const server = http.createServer(app);
+
+const wss = new WebSocketServer({ server });
+
+wss.on("connection", async (ws, req) => {
+    ws.on("message", (message) => {
+        console.log("received: %s", message);
+        ws.send(`Hello, you sent -> ${message}`);
+    });
 });
 
-app.get("/api", (req: any, res: any) => {
-  try {
-    // WebSocketFunction();
-    const ws = new WebSocket("ws://localhost:7071/ws");
-    ws.emit("get-messages", { message: "hello" });
-  } catch (error) {
-    console.log("err");
-  }
-});
+app.get("/", (req:any, res:any) => {
+    res.json({msg: "server ok"})
+})
 
-app.listen(8080);
-
-const wss = new WebSocket.Server({ port: 7071 });
-wss.on("connection", (ws: any) => {
-  console.log("Someone connected");
-  ws.on("message", (message: any) => {
-    console.log("message: %s", message);
-    ws.send(`Hello from server, you sent -> ${message}`);
-  });
-
-  ws.on("get-messages", (message: any) => {
-    console.log(message);
-    ws.send("Hello from server, you sent -> ", message);
-  });
-
-  ws.on("close", () => {
-    console.log("Someone disconnected");
-  });
-  console.log("wss up");
-});
+server.listen(port);
