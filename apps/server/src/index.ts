@@ -1,13 +1,11 @@
-const express = require("express");
-import http from "http";
+import express from "express";
 import { WebSocketServer } from "ws";
 
 const app = express();
-const port = 8080;
+app.use(express.json());
 
-const server = http.createServer(app);
-
-const wss = new WebSocketServer({ server });
+const httpServer = app.listen(8080);
+const wss = new WebSocketServer({ server: httpServer });
 
 wss.on("connection", async (ws, req) => {
   console.log("connected to websocket hii");
@@ -20,9 +18,3 @@ wss.on("connection", async (ws, req) => {
     console.log("Client disconnected");
   });
 });
-
-app.get("/", (req: any, res: any) => {
-  res.json({ msg: "server ok" });
-});
-
-server.listen(port);

@@ -17,17 +17,18 @@ const Join = () => {
 		email: '',
 	});
 	const { videoStatus, setVideoStatus } = useVideo();
-
-	const { user, addUser } = useUserContext();
 	const router = useRouter();
-	const { socket } = useSocket();
 
 	const joinRoomRoute = useCallback(({ rid }: any) => {
-		router.push(`/room/${rid}`);
+		if (rid.length == 12) {
+			router.push(`/room/${rid}`);
+		} else {
+			return new Error('Room Id is not valid');
+		}
 	}, []);
 
 	useEffect(() => {
-		getUserData();
+		// getUserData();
 		if (videoStatus) {
 			navigator.mediaDevices.getUserMedia({ video: true, audio: false }).then((res) => {
 				setVideo(res);
@@ -35,18 +36,13 @@ const Join = () => {
 		} else {
 			closeVideo();
 		}
-		// Socket Management
-		socket.on('joined-room', joinRoomRoute);
-		return () => {
-			socket.off('joined-room', joinRoomRoute);
-		};
-	}, [videoStatus, socket, joinRoomRoute]);
+	}, [videoStatus]);
 
-	const getUserData = async () => {
-		appwriteService.getUser().then(({ name, email }: any) => {
-			setUserInfo({ name, email });
-		});
-	};
+	// const getUserData = async () => {
+	// 	appwriteService.getUser().then(({ name, email }: any) => {
+	// 		setUserInfo({ name, email });
+	// 	});
+	// };
 
 	const closeVideo = () => {
 		if (video) {
@@ -57,15 +53,6 @@ const Join = () => {
 
 	const toggleCamera = () => {
 		setVideoStatus(!videoStatus);
-	};
-
-	const joinRoom = async () => {
-		if (rid.length == 12) {
-			addUser({ user2: userInfo.email, emailUser2: userInfo.email, rid });
-			socket.emit('join-room', { rid, emailId: userInfo.email });
-		} else {
-			return new Error('Room Id is not valid');
-		}
 	};
 
 	return (
@@ -81,7 +68,7 @@ const Join = () => {
 						onChange={(e) => setRid(e.target.value)}
 						className='px-10 py-2 rounded-lg text-black'
 					/>
-					<button aria-label='join' onClick={joinRoom} className='px-4 py-2 rounded-md bg-gray-500 mx-2 text-xl'>
+					<button aria-label='join' onClick={joinRoomRoute} className='px-4 py-2 rounded-md bg-gray-500 mx-2 text-xl'>
 						Join
 					</button>
 					<button

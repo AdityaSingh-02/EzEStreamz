@@ -5,22 +5,17 @@ import React, { useEffect, useState, useCallback } from 'react';
 import { usePathname } from 'next/navigation';
 import ReactPlayer from 'react-player';
 import { BsCameraVideo, BsCameraVideoOff } from 'react-icons/bs';
-
-// Test migrate
-import peerService from '@/services/peerservice';
+import { configuration } from '@/lib/iceserver/iceserver';
+import registerPeerConnectionLintners from '@/peerconnection/peerconnection';
 
 const Room = () => {
 	const [myVideo, setMyVideo] = useState<MediaStream>();
 	const [remoteEmailId, setRemoteEmailId] = useState();
-	const { videoStatus, setVideoStatus } = useVideo();
-	// const { createNewOffer, peer, createNewAnswer, setRemoteAns, sendStream, remoteStream } = usePeer();
-	const { user } = useUserContext();
-	const { socket } = useSocket();
-
-	// Test Migration
 	const [remoteStream, setRemoteStream] = useState<MediaStream>();
-	const [remoteSocketID, setRemoteSocketId] = useState();
-
+	const { videoStatus, setVideoStatus } = useVideo();
+	const { user } = useUserContext();
+	let peerConnection: RTCPeerConnection;
+	let localStream: any;
 	const pathName: string = usePathname()!;
 	const rid = pathName.split('/')[2];
 
@@ -31,102 +26,52 @@ const Room = () => {
 			setMyVideo(undefined);
 		}
 	};
+	let flag = false;
+	let data: any;
+	const createRoom = async() => {
+		peerConnection = new RTCPeerConnection(configuration);
+		registerPeerConnectionLintners(peerConnection);
 
-	const handleNewUserJoined = useCallback(
-		async (data: any) => {
-			const { rid, emailId, id } = data;
-			console.log("THHEEE data ", data);
-			// test
-			const offer = await peerService.getOffer();
-			socket.emit('call-user', { emailId, offer });
-			console.log('111');
-			setRemoteEmailId(emailId);
-			setRemoteSocketId(id);
-			const stream = await navigator.mediaDevices.getUserMedia({audio:true, video:true});
-			setMyVideo(stream);
-		},
-		// [createNewOffer, socket],
-		[socket],
-	);
+		const offer = await peerConnection.createOffer();
+		await peerConnection.setLocalDescription(offer);
 
-	const handleIncommingCall = useCallback(
-		//todo- fix - Method Not working
-		async (data: any) => {
-			console.log('222');
-			const { from, offer, email } = data;
-			console.log("The Data 2",data);
-			setRemoteSocketId(from);
-			// test
-			const ans = await peerService.getAnswer(offer);
-			socket.emit('call-accepted', { to: from, ans });
-			setRemoteEmailId(email);
-			const stream = await navigator.mediaDevices.getUserMedia({audio:true, video:true});
-			setMyVideo(stream);
-		},
-		// [createNewAnswer, socket],
-		[socket],
-	);
-
-	const sendStream = useCallback(() => {
-		myVideo?.getTracks().forEach((track) => {
-			peerService.peer.addTrack(track, myVideo);
-		});
-	}, [myVideo]);
-
-	const handleCallAccepted = useCallback(
-		async (data: any) => {
-			const { ans } = data;
-			console.log('call accepted', ans);
-			// Test-------------
-			peerService.setLocalDescription(ans);
-			sendStream();
-		},
-		// [setRemoteAns, socket],
-		[peerService.setLocalDescription, socket, myVideo],
-	);
-
-	useEffect(() => {
-		socket.on('user-joined', handleNewUserJoined);
-		socket.on('incomming-call', handleIncommingCall);
-		socket.on('call-accepted', handleCallAccepted);
-
-		if (videoStatus) {
-			navigator.mediaDevices.getUserMedia({ video: true, audio: true }).then((res) => {
-				setMyVideo(res);
-				// Test Migration
-				// sendStream(res);
-			});
-		} else {
-			closeVideoStream();
+		const roomWithOffer = {
+			offer: {
+				type: offer.type,
+				sdp: offer.sdp
+			}
+		}
+		data = roomWithOffer;
+		const roomId = rid;
+		if(!peerConnection.currentRemoteDescription && data.answer){
+			const ans = new RTCSessionDescription(data.answer);
+			await peerConnection.setRemoteDescription(ans);
 		}
 
-		return () => {
-			socket.off('user-joined', handleNewUserJoined);
-			socket.off('incomming-call', handleIncommingCall);
-			socket.off('call-accepted', handleCallAccepted);
-		};
-		// Test - migration
-	}, [videoStatus, user, socket, handleIncommingCall, handleNewUserJoined, handleCallAccepted]);
-
-	const handleNegotiations = useCallback(() => {
-		console.log('333');
-		// Test migration
-		const offer = peerService.getOffer();
-		socket.emit('call-user', { emailId: remoteEmailId, offer });
-	}, [remoteEmailId, socket]);
-
-	useEffect(() => {
-		// Test Migration
-		peerService.peer.addEventListener('negotiationneeded', handleNegotiations);
-		peerService.peer.addEventListener('track', async (ev) => {
-			const stream: any = ev.streams;
-			console.log("got stream");
-			setRemoteStream(stream[0]);
+		localStream.getTrack().forEach((track: any) => {
+			peerConnection.addTrack(track, localStream);
 		});
-		return () => {
-			peerService.peer.removeEventListener('negotiationneeded', handleNegotiations);
-		};
-	}, [handleNegotiations]);
+	};
+
+	const joinRoom = async() => {
+		const offer = data.offer;
+		await peerConnection.setRemoteDescription(offer);
+		const answer = await peerConnection.createAnswer();
+		await peerConnection.setLocalDescription(answer);
+
+		const roomWithAnswer = {
+			answer:{
+				type: answer.type,
+				sdp: answer.sdp
+			}
+		}
+		data = roomWithAnswer;
+		flag = true;
+	};
+
+	const sendStream = {};
+
+	const handleCallAccepted = {};
 
 	const toggleMyVideo = () => {
 		setVideoStatus(!videoStatus);
@@ -134,12 +79,9 @@ const Room = () => {
 
 	const sendVideo = () => {
 		navigator.mediaDevices.getUserMedia({ video: true, audio: true }).then((res) => {
-			// sendStream(res);
 			setMyVideo(res);
-			sendStream();
 		});
 	};
-
 
 	return (
 		<>
@@ -152,7 +94,7 @@ const Room = () => {
 					<div className='border-2 border-red-400 h-[250px] rounded-2xl flex justify-center items-center'>
 						<ReactPlayer url={myVideo} playing muted height={240} width={800} />
 					</div>
-					<div className='border-2 border-red-400 h-[400px] rounded-2xl flex justify-center items-center'>Details : WIP BETA</div>
+					<div className='border-2 border-red-400 h-[400px] rounded-2xl flex justify-center items-center'>Details : coming soon...</div>
 					<div className=' flex justify-center '>
 						{/* <button
 							onClick={toggleMyVideo}

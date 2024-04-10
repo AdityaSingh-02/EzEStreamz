@@ -31,14 +31,14 @@ const Preview = () => {
 
 	// gets uuid
 	// remember Do not use rid for routing purposes
-	let rid = v4().substring(0, 12);
+	const rid = v4().substring(0, 12);
 	if (roomId === '') {
 		setRoomId(rid);
 	}
 
-	const createRoomRoute = useCallback(({ rid }: any) => {
-		router.push(`/room/${rid}`);
-	}, []);
+	const createRoomRoute = () => {
+		router.push(`/room/${roomId}`);
+	};
 
 	// Manages video on and off state
 	useEffect(() => {
@@ -49,14 +49,10 @@ const Preview = () => {
 		} else {
 			closeVideo();
 		}
-		getUserData();
-		// Socket Management
-		socket.on('joined-room', createRoomRoute);
-
-		return () => {
-			socket.off('joined-room', createRoomRoute);
-		};
-	}, [videoStatus, socket, createRoomRoute]);
+		if (userInfo.name == '' && userInfo.email == '') {
+			getUserData();
+		}
+	}, [videoStatus]);
 
 	// Closes all the tracks for camera
 	const closeVideo = () => {
@@ -92,7 +88,6 @@ const Preview = () => {
 	const handleCreateRoom = async () => {
 		// Hook used to store user data
 		addUser({ emailUser1: userInfo.email, user1: userInfo.name, rid: roomId });
-		socket.emit('join-room', { rid: roomId, emailId: userInfo.email });
 	};
 
 	return (
@@ -108,7 +103,7 @@ const Preview = () => {
 							{!copy ? <BiCopy /> : <MdDone color='green' />}
 						</button>
 					</h1>
-					<button onClick={handleCreateRoom} className='px-4 py-2 rounded-md bg-gray-500 mx-2 text-xl'>
+					<button onClick={createRoomRoute} className='px-4 py-2 rounded-md bg-gray-500 mx-2 text-xl'>
 						Join
 					</button>
 					<button
