@@ -1,20 +1,89 @@
-import express from "express";
-import { WebSocketServer } from "ws";
+import { WebSocketServer, WebSocket } from 'ws';
 
-const app = express();
-app.use(express.json());
+const wss = new WebSocketServer({ port: 8080 });
+let senderSocket: WebSocket | null = null;
+let receiverSocket: WebSocket | null = null;
 
-const httpServer = app.listen(8080);
-const wss = new WebSocketServer({ server: httpServer });
+interface IMessage {
+  type: string;
+  payload: {
+    remoteSdp: RTCSessionDescription;
+    candidate: RTCIceCandidateInit;
+    type: "sender" | "receiver";
+  };
+}
 
-wss.on("connection", async (ws, req) => {
-  console.log("connected to websocket hii");
-  ws.on("message", (message) => {
-    console.log("received: %s", message);
-    ws.send(`Hello, you sent -> ${message}`);
-  });
+wss.on("connection", (ws: WebSocket) => {
+  ws.on("message", (data) => {
+    const message: IMessage = JSON.parse(data.toString());
 
-  ws.on("close", () => {
-    console.log("Client disconnected");
+    console.log("this was message data + ", message.type);
+
+    switch (message.type) {
+      case "sender":
+        console.log("Sender")
+        senderSocket = ws;
+        break;
+
+      case "receiver":
+        console.log("receiver")
+        receiverSocket = ws;
+        break;
+
+      case "create-offer":
+        if ((ws === senderSocket) && receiverSocket) {
+          console.log("Offer from sender")
+          receiverSocket.send(JSON.stringify({
+            type: "create-offer",
+            payload: {
+              remoteSdp: message.payload.remoteSdp
+            }
+          }))
+        }
+
+        if ((ws === receiverSocket) && senderSocket) {
+          console.log("Offer from receiver")
+          senderSocket.send(JSON.stringify({
+            type: "create-offer",
+            payload: {
+              remoteSdp: message.payload.remoteSdp
+            }
+          }))
+        }
+        break;
+
+      case "create-answer":
+        if (ws === senderSocket && receiverSocket) {
+          console.log("ans from sender")
+          receiverSocket.send(JSON.stringify({
+            type: "create-answer",
+            payload: {
+              remoteSdp: message.payload.remoteSdp
+            }
+          }))
+        }
+        if (ws === receiverSocket && senderSocket) {
+          console.log("ans from receiver")
+          senderSocket.send(JSON.stringify({
+            type: "create-answer",
+            payload: {
+              remoteSdp: message.payload.remoteSdp
+            }
+          }))
+        }
+        break;
+
+      case "ice-candidate":
+        const target = ws === senderSocket ? senderSocket : receiverSocket;
+        if (target && message.payload.candidate) {
+          target.send(JSON.stringify({
+            type: "ice-candidate",
+            payload: {
+              candidate: message.payload.candidate
+            }
+          }))
+        }
+        break;
+    }
   });
 });
