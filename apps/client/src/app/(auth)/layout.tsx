@@ -13,7 +13,8 @@ export default function RootLayout({
 }) {
   return (
     <>
-      <TempLayout>{children}</TempLayout>
+      {/* <TempLayout>{children}</TempLayout> */}
+      {children}
     </>
   );
 }

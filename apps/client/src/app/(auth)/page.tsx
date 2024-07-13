@@ -4,23 +4,22 @@ import Link from 'next/link';
 import useAuth from '@/Context/Authentication/useAuth';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
-import { useWebSocket } from '@/web-socket';
+
 
 export default function Home() {
 	const router = useRouter();
 	const { authStatus } = useAuth();
-	const socket = useWebSocket();
-	useEffect(() => {
-		if (authStatus) {
-			router.replace('/profile');
-		}
-		if (socket) {
-      socket.send('hello')
-			socket.onmessage = (e: any) => {
-        console.log(e.data);
-      }
-		}
-	}, [socket]);
+	// useEffect(() => {
+	// 	if (authStatus) {
+	// 		router.replace('/profile');
+	// 	}
+	// 	if (socket) {
+    //   socket.send('hello')
+	// 		socket.onmessage = (e: any) => {
+    //     console.log(e.data);
+    //   }
+	// 	}
+	// }, [socket]);
 
 	return (
 		<main className='flex min-h-screen flex-col items-center justify-between p-24 bg-gray-900 '>
